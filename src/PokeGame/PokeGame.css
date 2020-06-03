@@ -1,0 +1,22 @@
+.PokeGame-winner {
+  height: 5rem;
+}
+
+.PokeGame-winner-msg {
+  color: green;
+  font-weight: bold;
+  font-size: 1.5rem;
+}
+
+.PokeGame-start-game-button {
+  width: 20rem;
+  height: 5rem;
+  font-size: 2rem;
+  font-family: cursive;
+  font-weight: bold;
+  background-color: antiquewhite;
+}
+
+.PokeGame-start-game-button:hover {
+  cursor: pointer;
+}
