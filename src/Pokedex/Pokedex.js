@@ -8,12 +8,12 @@ const PAGE_POKEMON_COUNT_VALUES = [20, 50, 100];
 const POKEMON_API_URL = `https://pokeapi.co/api/v2/pokemon?offset=0&limit=`;
 
 const Pokedex = (props) => {
-  const [perPagePokemonCount, setPerPagePokemonCount] = useState(20);
+  const [pokemonsPerPage, setPokemonsPerPage] = useState(20);
   const [paginationCount, setPaginationCount] = useState(0);
   const [pokemonList, setPokemonList] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
   const [currentPageURL, setCurrentPageURL] = useState(
-    POKEMON_API_URL + perPagePokemonCount
+    POKEMON_API_URL + pokemonsPerPage
   );
 
   useEffect(() => {
@@ -22,21 +22,43 @@ const Pokedex = (props) => {
 
       await retrieveData;
 
-      retrieveData.then((res) => {
-        setPaginationCount(() =>
-          Math.ceil(res.data.count / perPagePokemonCount)
-        );
-        setPokemonList(res.data.results);
+      let pokemons = [];
+
+      await retrieveData.then((res) => {
+        pokemons = res.data.results;
+        setPaginationCount(() => Math.ceil(res.data.count / pokemonsPerPage));
         setIsLoading(false);
       });
+
+      const individualPokemonDetails = [];
+      for (let pokemon of pokemons) {
+        individualPokemonDetails.push(axios.get(pokemon.url));
+      }
+
+      Promise.all(individualPokemonDetails).then((res) => {
+        const pokeList = [];
+        for (let pokemon of res) {
+          const urlSplit = pokemon.config.url.split("/");
+          const pokeID = urlSplit[urlSplit.length - 2];
+          pokeList.push(
+            <PokeCard data={pokemon.data} id={pokeID} key={pokeID} />
+          );
+        }
+        setPokemonList(pokeList);
+      });
     })();
-  }, [currentPageURL, perPagePokemonCount]);
+  }, [currentPageURL, pokemonsPerPage]);
 
   const pageChanged = (pageNo) => {
-    const offset = pageNo * perPagePokemonCount - perPagePokemonCount;
-    setCurrentPageURL(
-      `https://pokeapi.co/api/v2/pokemon?offset=${offset}&limit=${perPagePokemonCount}`
-    );
+    const offset = pageNo * pokemonsPerPage - pokemonsPerPage;
+    const newURL = `https://pokeapi.co/api/v2/pokemon?offset=${offset}&limit=${pokemonsPerPage}`;
+    setCurrentPageURL(() => newURL);
+  };
+
+  const pokemonsPerPageChanged = (count) => {
+    const newURL = `${POKEMON_API_URL}${count}`;
+    setCurrentPageURL(() => newURL);
+    setPokemonsPerPage(count);
   };
 
   const loadingSpinnerJSX = <CircularProgress disableShrink />;
@@ -45,13 +67,17 @@ const Pokedex = (props) => {
     <>
       <div className="Pokedex-cards">
         {isLoading && loadingSpinnerJSX}
-        {pokemonList.map((pokemon) => {
-          const urlSplit = pokemon.url.split("/");
-          const pokeID = urlSplit[urlSplit.length - 2];
-          return <PokeCard pokemon={pokemon} id={pokeID} key={pokeID} />;
-        })}
+        {pokemonList}
       </div>
-      <PaginationOutlined count={paginationCount} pageChanged={pageChanged} />
+      <PaginationOutlined
+        count={paginationCount}
+        pageChanged={pageChanged}
+        itemsPerPage={pokemonsPerPage}
+        menuValues={PAGE_POKEMON_COUNT_VALUES}
+        itemsPerPageChanged={pokemonsPerPageChanged}
+        menuTitle="Pokemons"
+        includeItemsPerPage
+      />
     </>
   );
 };

@@ -1,36 +1,30 @@
 import React from "react";
 import "./PokeCard.css";
-const POKE_IMG_API =
-  "https://assets.pokemon.com/assets/cms2/img/pokedex/detail/";
-
-/**
- *The URl needs the Id's of Pokemons to be of length 3. Eg: 001, 123, 049 etc..
- * @param {*} id -> Id of the Pokemon.
- * @param {*} precision -> The length of the digits to which the Id needs to be padded.
- */
-const getPaddedId = (id, precision) => {
-  id = "" + id;
-  while (id.length < precision) {
-    id = "0" + id;
-  }
-
-  return id;
-};
+const POKE_IMG_API = "https://pokeres.bastionbot.org/images/pokemon/";
 
 const PokeCard = (props) => {
-  const pokemon = props.pokemon;
+  const name = props.data.name;
+  const exp = props.data.base_experience;
+  let type = "normal";
+  if (props.data.types && props.data.types.length) {
+    type = props.data.types[0].type.name;
+  }
+  const height = props.data.height;
+  const weight = props.data.weight;
   const pokeID = props.id;
-  const imgSrc = `${POKE_IMG_API}${getPaddedId(pokeID, 3)}.png`;
+  const imgSrc = `${POKE_IMG_API}${pokeID}.png`;
   return (
-    <div className="PokeCard">
-      <p className="PokeCard-title">{pokemon.name}</p>
+    <div className={`PokeCard ${type}`}>
+      <p className="PokeCard-title">{name}</p>
       <img
         className="PokeCard-pokemon"
         src={imgSrc}
-        alt={`Pokemon: ${pokemon.name}`}
+        alt={`Pokemon: ${name}`}
       ></img>
-      <p>Type: {pokemon.type}</p>
-      <p>EXP: {pokemon.base_experience} </p>
+      <p>Type: {type}</p>
+      <p>Height: {height}</p>
+      <p>Weight: {weight}</p>
+      <p>Experience: {exp} </p>
     </div>
   );
 };
