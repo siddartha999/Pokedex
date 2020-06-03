@@ -8,18 +8,24 @@ const useStyles = makeStyles((theme) => ({
       marginTop: theme.spacing(2),
     },
   },
+  ul: {
+    "& .MuiPagination-ul": {
+      justifyContent: "space-evenly",
+    },
+  },
 }));
-
-const handlePageChange = (event, pgNo) => {
-  console.log(event.target, pgNo);
-};
 
 const PaginationOutlined = (props) => {
   const classes = useStyles();
 
+  const handlePageChange = (event, pgNo) => {
+    props.pageChanged(pgNo);
+  };
+
   return (
     <div className={classes.root}>
       <Pagination
+        className={classes.ul}
         count={props.count}
         variant="outlined"
         color="secondary"

@@ -19,7 +19,8 @@ const getPaddedId = (id, precision) => {
 
 const PokeCard = (props) => {
   const pokemon = props.pokemon;
-  const imgSrc = `${POKE_IMG_API}${getPaddedId(props.pokemon.id, 3)}.png`;
+  const pokeID = props.id;
+  const imgSrc = `${POKE_IMG_API}${getPaddedId(pokeID, 3)}.png`;
   return (
     <div className="PokeCard">
       <p className="PokeCard-title">{pokemon.name}</p>
