@@ -18,6 +18,7 @@ const Pokedex = (props) => {
 
   useEffect(() => {
     (async () => {
+      setIsLoading(true);
       const retrieveData = axios.get(currentPageURL);
 
       await retrieveData;
@@ -27,7 +28,6 @@ const Pokedex = (props) => {
       await retrieveData.then((res) => {
         pokemons = res.data.results;
         setPaginationCount(() => Math.ceil(res.data.count / pokemonsPerPage));
-        setIsLoading(false);
       });
 
       const individualPokemonDetails = [];
@@ -45,6 +45,7 @@ const Pokedex = (props) => {
           );
         }
         setPokemonList(pokeList);
+        setIsLoading(false);
       });
     })();
   }, [currentPageURL, pokemonsPerPage]);
@@ -61,7 +62,9 @@ const Pokedex = (props) => {
     setPokemonsPerPage(count);
   };
 
-  const loadingSpinnerJSX = <CircularProgress disableShrink />;
+  const loadingSpinnerJSX = (
+    <CircularProgress disableShrink className="loading-spinner" />
+  );
 
   return (
     <>

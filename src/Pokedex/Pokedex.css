@@ -5,3 +5,8 @@
   height: 85%;
   overflow: auto;
 }
+
+.loading-spinner {
+  position: absolute;
+  top: 50%;
+}

@@ -32,14 +32,17 @@
 
 .fighting {
   background: #a75543;
+  color: lightcyan;
 }
 
 .flying {
   background: #78a2ff;
+  color: honeydew;
 }
 
 .poison {
   background: #a95ca0;
+  color: bisque;
 }
 
 .ground {
@@ -64,10 +67,12 @@
 
 .fire {
   background: #fa5643;
+  color: floralwhite;
 }
 
 .water {
   background: #56adff;
+  color: darkred;
 }
 
 .grass {

@@ -1,8 +1,10 @@
-import React from "react";
+import React, { useState } from "react";
 import "./PokeCard.css";
+import PokeCardDialog from "../PokeCardDialog/PokeCardDialog";
 const POKE_IMG_API = "https://pokeres.bastionbot.org/images/pokemon/";
 
 const PokeCard = (props) => {
+  const [isDialogOpen, setIsDialogOpen] = useState(false);
   const name = props.data.name;
   const exp = props.data.base_experience;
   let type = "normal";
@@ -13,18 +15,34 @@ const PokeCard = (props) => {
   const weight = props.data.weight;
   const pokeID = props.id;
   const imgSrc = `${POKE_IMG_API}${pokeID}.png`;
+
+  const handleToggleDialog = () => {
+    setIsDialogOpen(!isDialogOpen);
+  };
+
+  const imgJSX = (
+    <img
+      className="PokeCard-pokemon"
+      src={imgSrc}
+      alt={`${name}`}
+      onClick={handleToggleDialog}
+    ></img>
+  );
+
   return (
     <div className={`PokeCard ${type}`}>
       <p className="PokeCard-title">{name}</p>
-      <img
-        className="PokeCard-pokemon"
-        src={imgSrc}
-        alt={`Pokemon: ${name}`}
-      ></img>
+      {imgJSX}
       <p>Type: {type}</p>
       <p>Height: {height}</p>
       <p>Weight: {weight}</p>
       <p>Experience: {exp} </p>
+      <PokeCardDialog
+        open={isDialogOpen}
+        closeDialog={handleToggleDialog}
+        data={props.data}
+        imgJSX={imgJSX}
+      />
     </div>
   );
 };
