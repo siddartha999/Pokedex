@@ -34,7 +34,7 @@ const InvertedBarChart = (props) => {
     const newStyleObj = { ...styleObj };
     newStyleObj.width = width * 100 + "%";
     return (
-      <div style={newStyleObj} title={name + " : " + value}>
+      <div style={newStyleObj} title={name + " : " + value} key={name}>
         {name}
       </div>
     );

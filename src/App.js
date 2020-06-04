@@ -4,6 +4,7 @@ import Pokedex from "./Pokedex/Pokedex";
 import PokeGame from "./PokeGame/PokeGame";
 import { Route, Switch } from "react-router-dom";
 import NavBar from "./Navbar/Navbar";
+import Compare from "./Compare/Compare";
 
 function App() {
   const pokemonList = [
@@ -21,16 +22,13 @@ function App() {
     <div className="App">
       <NavBar />
       <Switch>
-        <Route
-          exact
-          path="/"
-          render={() => <Pokedex pokemonList={pokemonList} />}
-        />
+        <Route exact path="/" render={() => <Pokedex />} />
         <Route
           exact
           path="/pokegame"
           render={() => <PokeGame pokemonList={pokemonList} />}
         />
+        <Route exact path="/compare" render={() => <Compare />} />
       </Switch>
     </div>
   );

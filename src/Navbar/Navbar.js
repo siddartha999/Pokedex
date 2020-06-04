@@ -51,6 +51,17 @@ const NavBar = () => {
         >
           PokeGame
         </Typography>
+
+        <Typography
+          variant="h6"
+          className={classes.title}
+          component={NavLink}
+          to="/compare"
+          exact
+          activeClassName={classes["active-link"]}
+        >
+          Compare
+        </Typography>
       </Toolbar>
     </AppBar>
   );
