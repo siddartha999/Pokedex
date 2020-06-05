@@ -1,28 +1,41 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import "./App.css";
 import Pokedex from "./Pokedex/Pokedex";
 import PokeGame from "./PokeGame/PokeGame";
 import { Route, Switch } from "react-router-dom";
 import NavBar from "./Navbar/Navbar";
 import Compare from "./Compare/Compare";
+import retrievePokemonList from "./services/retrievePokemonList";
+import CircularProgress from "@material-ui/core/CircularProgress";
 
 function App() {
-  const pokemonList = [
-    { id: 4, name: "Charmander", type: "fire", base_experience: 62 },
-    { id: 7, name: "Squirtle", type: "water", base_experience: 63 },
-    { id: 11, name: "Metapod", type: "bug", base_experience: 72 },
-    { id: 12, name: "Butterfree", type: "flying", base_experience: 178 },
-    { id: 25, name: "Pikachu", type: "electric", base_experience: 112 },
-    { id: 39, name: "Jigglypuff", type: "normal", base_experience: 95 },
-    { id: 94, name: "Gengar", type: "poison", base_experience: 225 },
-    { id: 133, name: "Eevee", type: "normal", base_experience: 65 },
-  ];
+  const [pokemonList, setPokemonList] = useState([]);
+  const [isLoading, setIsLoading] = useState(true);
 
-  return (
-    <div className="App">
+  useEffect(() => {
+    (async () => {
+      if (!pokemonList.length) {
+        setIsLoading(true);
+        const pokeList = await retrievePokemonList();
+        setPokemonList(pokeList);
+        setIsLoading(false);
+      }
+    })();
+  }, [pokemonList]);
+
+  const loadingSpinnerJSX = (
+    <CircularProgress disableShrink className="loading-spinner" />
+  );
+
+  const appBodyJSX = (
+    <>
       <NavBar />
       <Switch>
-        <Route exact path="/" render={() => <Pokedex />} />
+        <Route
+          exact
+          path="/"
+          render={() => <Pokedex pokemonList={pokemonList} />}
+        />
         <Route
           exact
           path="/pokegame"
@@ -30,7 +43,11 @@ function App() {
         />
         <Route exact path="/compare" render={() => <Compare />} />
       </Switch>
-    </div>
+    </>
+  );
+
+  return (
+    <div className="App">{isLoading ? loadingSpinnerJSX : appBodyJSX}</div>
   );
 }
 

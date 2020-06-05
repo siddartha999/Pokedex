@@ -1,6 +1,37 @@
 import React, { useState } from "react";
 import Pokedex from "../Pokedex/Pokedex";
+import Button from "@material-ui/core/Button";
+import ButtonGroup from "@material-ui/core/ButtonGroup";
+import { makeStyles } from "@material-ui/core/styles";
 import "./PokeGame.css";
+
+const ALLOWED_CARDS_PER_GAME = [20, 50, 100];
+
+const useStyles = makeStyles((theme) => ({
+  root: {
+    display: "flex",
+    justifyContent: "center",
+    alignItems: "center",
+    "& > *": {
+      margin: theme.spacing(1),
+    },
+  },
+  button: {
+    margin: theme.spacing(1),
+    height: "5rem",
+    width: "50%",
+    minWidth: "5rem",
+    fontSize: "1.25rem",
+    fontFamily: "cursive",
+    fontStyle: "italic",
+    "&:hover": {
+      backgroundColor: "lightslategray",
+    },
+  },
+  active: {
+    backgroundColor: "firebrick",
+  },
+}));
 
 /**
  *This function returns two lists with random pokemons picked from the pokemons list.
@@ -19,9 +50,11 @@ const generateListsWithRandomIds = (list) => {
 };
 
 const PokeGame = (props) => {
+  const classes = useStyles();
   const pokemonList = props.pokemonList;
   const [list1, list2] = generateListsWithRandomIds(pokemonList);
   const [hasGameStarted, setHasGameStarted] = useState(false);
+  const [cardsPerGame, setCardsPerGame] = useState(20);
 
   const score1 = list1.reduce(
     (exp, pokemon) => exp + pokemon.base_experience,
@@ -38,11 +71,37 @@ const PokeGame = (props) => {
     setHasGameStarted(!hasGameStarted);
   };
 
+  const handleCardsButtonClicked = (event) => {
+    const val = event.target.parentElement.name;
+    if (val) {
+      setCardsPerGame(event.target.parentElement.name);
+    }
+  };
+
   const startGameButtonJSX = (
     <div className="PokeGame-start-game-button-container">
-      <button className="PokeGame-start-game-button" onClick={clickHandler}>
-        START GAME
-      </button>
+      <div className="PokeGame-start-game-button-group-container">
+        <ButtonGroup
+          variant="contained"
+          color="primary"
+          aria-label="contained primary button group"
+          className={classes.root}
+        >
+          {ALLOWED_CARDS_PER_GAME.map((val) => (
+            <Button name={val} key={val} onClick={handleCardsButtonClicked}>
+              {val} Cards Each
+            </Button>
+          ))}
+        </ButtonGroup>
+      </div>
+      <Button
+        variant="contained"
+        color="primary"
+        size="large"
+        className={classes.button}
+      >
+        Start Game : {cardsPerGame} Cards
+      </Button>
     </div>
   );
 

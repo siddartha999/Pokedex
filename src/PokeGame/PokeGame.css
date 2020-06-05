@@ -20,3 +20,7 @@
 .PokeGame-start-game-button:hover {
   cursor: pointer;
 }
+
+.PokeGame-start-game-button-group-container {
+  margin: 2rem;
+}

@@ -40,7 +40,6 @@ const PaginationOutlined = (props) => {
   const handlePageChange = (event, pgNo) => {
     props.pageChanged(pgNo);
   };
-  console.log("Pag-re-ren");
 
   const handleItemsPerPageChange = (event, no) => {
     props.itemsPerPageChanged(no.props.value);
@@ -74,6 +73,7 @@ const PaginationOutlined = (props) => {
         count={props.count}
         variant="outlined"
         color="secondary"
+        page={props.page}
         onChange={handlePageChange}
       />
     </div>
