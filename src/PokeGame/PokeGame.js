@@ -1,11 +1,12 @@
 import React, { useState } from "react";
-import Pokedex from "../Pokedex/Pokedex";
 import Button from "@material-ui/core/Button";
 import ButtonGroup from "@material-ui/core/ButtonGroup";
 import { makeStyles } from "@material-ui/core/styles";
+import generateRandomLists from "../services/generateRandomLists";
 import "./PokeGame.css";
 
 const ALLOWED_CARDS_PER_GAME = [20, 50, 100];
+const NUMBER_OF_PLAYERS = [2, 3, 5];
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -33,42 +34,23 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-/**
- *This function returns two lists with random pokemons picked from the pokemons list.
- This function works best when the length of the list is EVEN, which is crucial for the game to be fair!
- * @param {*} list -> List of Pokemons.
- */
-const generateListsWithRandomIds = (list) => {
-  const list1 = [];
-  const list2 = [...list];
-  let randomNum;
-  while (list1.length < list2.length) {
-    randomNum = Math.floor(Math.random() * list2.length);
-    list1.push(...list2.splice(randomNum, 1));
-  }
-  return [list1, list2];
-};
-
 const PokeGame = (props) => {
   const classes = useStyles();
   const pokemonList = props.pokemonList;
-  const [list1, list2] = generateListsWithRandomIds(pokemonList);
   const [hasGameStarted, setHasGameStarted] = useState(false);
-  const [cardsPerGame, setCardsPerGame] = useState(20);
+  const [cardsPerGame, setCardsPerGame] = useState(ALLOWED_CARDS_PER_GAME[0]);
+  const [totalPlayers, setTotalPlayers] = useState(NUMBER_OF_PLAYERS[0]);
+  let player1Cards = [];
+  let player2Cards = [];
 
-  const score1 = list1.reduce(
-    (exp, pokemon) => exp + pokemon.base_experience,
-    0
-  );
-  const score2 = list2.reduce(
-    (exp, pokemon) => exp + pokemon.base_experience,
-    0
-  );
-  const winner =
-    score1 > score2 ? "1" : score1 !== score2 ? "2" : "The scores are TIED!!!";
-
-  const clickHandler = () => {
+  const startGameHandler = () => {
     setHasGameStarted(!hasGameStarted);
+    [player1Cards, player2Cards] = generateRandomLists(
+      pokemonList,
+      totalPlayers,
+      cardsPerGame
+    );
+    console.log(player1Cards, player2Cards);
   };
 
   const handleCardsButtonClicked = (event) => {
@@ -78,7 +60,7 @@ const PokeGame = (props) => {
     }
   };
 
-  const startGameButtonJSX = (
+  const preGameJSX = (
     <div className="PokeGame-start-game-button-container">
       <div className="PokeGame-start-game-button-group-container">
         <ButtonGroup
@@ -99,32 +81,16 @@ const PokeGame = (props) => {
         color="primary"
         size="large"
         className={classes.button}
+        onClick={startGameHandler}
       >
         Start Game : {cardsPerGame} Cards
       </Button>
     </div>
   );
 
-  const replayGameJSX = (
-    <div>
-      <button onClick={clickHandler}>Replay!</button>
-    </div>
-  );
+  const gameJSX = <></>;
 
-  const gameJSX = (
-    <>
-      <p>Total Experience: {score1}</p>
-      <Pokedex pokemonList={list1} />
-      <p>Total Experience: {score2}</p>
-      <Pokedex pokemonList={list2} />
-      <div className="PokeGame-winner">
-        <p className="PokeGame-winner-msg">Player {winner} is the Winner!!!</p>
-      </div>
-      {replayGameJSX}
-    </>
-  );
-
-  return <>{hasGameStarted ? gameJSX : startGameButtonJSX}</>;
+  return <>{hasGameStarted ? gameJSX : preGameJSX}</>;
 };
 
 export default PokeGame;
