@@ -1,0 +1,15 @@
+.StackCards-card-container {
+  margin-top: 1rem;
+  height: calc(100% - 1rem);
+}
+
+.StackCards-card-container img {
+  height: 100%;
+  width: 50%;
+}
+
+.StackCards-PokeCard-container {
+  width: 100%;
+  min-width: 20rem;
+  height: 100%;
+}

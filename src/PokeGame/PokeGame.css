@@ -1,3 +1,8 @@
+.PokeGame {
+  width: 100%;
+  height: 90%;
+}
+
 .PokeGame-winner {
   height: 5rem;
 }
@@ -6,6 +11,34 @@
   color: green;
   font-weight: bold;
   font-size: 1.5rem;
+}
+
+.PokeGame-players-card-lists-container {
+  height: 80%;
+}
+
+.PokeGame-player-Poke-card-list-container {
+  display: inline-block;
+  width: 25%;
+  height: 100%;
+}
+
+.PokeGame-player-Poke-card-list-container.left {
+  float: left;
+}
+
+.PokeGame-player-Poke-card-list-container.right {
+  float: right;
+}
+
+.PokeGame-players-score-container {
+  height: 15%;
+  margin-top: 5%;
+}
+
+.PokeGame-individual-player-score-container {
+  display: inline-block;
+  width: 50%;
 }
 
 .PokeGame-start-game-button {

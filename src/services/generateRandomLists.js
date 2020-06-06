@@ -15,6 +15,7 @@ const generateRandomLists = (list, num, length) => {
     for (let index = 0; index < newList.length; index++) {
       let randomId = retrieveUniqueNumber(selectedIds, list.length);
       newList[index].push({ ...list[randomId] });
+      console.log("retrieving");
     }
     length--;
   }
@@ -31,7 +32,7 @@ const generateRandomLists = (list, num, length) => {
 const retrieveUniqueNumber = (retrievedNumbersSet, maxNum) => {
   let uniqueNum = Math.floor(Math.random() * maxNum);
   while (retrievedNumbersSet.has(uniqueNum)) {
-    uniqueNum = Math.floor(Math.random * maxNum);
+    uniqueNum = Math.floor(Math.random() * maxNum);
   }
   retrievedNumbersSet.add(uniqueNum);
   return uniqueNum;

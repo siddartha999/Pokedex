@@ -3,10 +3,10 @@ import Button from "@material-ui/core/Button";
 import ButtonGroup from "@material-ui/core/ButtonGroup";
 import { makeStyles } from "@material-ui/core/styles";
 import generateRandomLists from "../services/generateRandomLists";
+import StackCards from "../StackCards/StackCards";
 import "./PokeGame.css";
 
 const ALLOWED_CARDS_PER_GAME = [20, 50, 100];
-const NUMBER_OF_PLAYERS = [2, 3, 5];
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -39,18 +39,16 @@ const PokeGame = (props) => {
   const pokemonList = props.pokemonList;
   const [hasGameStarted, setHasGameStarted] = useState(false);
   const [cardsPerGame, setCardsPerGame] = useState(ALLOWED_CARDS_PER_GAME[0]);
-  const [totalPlayers, setTotalPlayers] = useState(NUMBER_OF_PLAYERS[0]);
-  let player1Cards = [];
-  let player2Cards = [];
+  const [player1Cards, setPlayer1Cards] = useState([]);
+  const [player2Cards, setPlayer2Cards] = useState([]);
+  const [player1Score, setPlayer1Score] = useState(0);
+  const [player2Score, setPlayer2Score] = useState(0);
 
   const startGameHandler = () => {
     setHasGameStarted(!hasGameStarted);
-    [player1Cards, player2Cards] = generateRandomLists(
-      pokemonList,
-      totalPlayers,
-      cardsPerGame
-    );
-    console.log(player1Cards, player2Cards);
+    const cardsList = generateRandomLists(pokemonList, 2, 2);
+    setPlayer1Cards(cardsList[0]);
+    setPlayer2Cards(cardsList[1]);
   };
 
   const handleCardsButtonClicked = (event) => {
@@ -88,7 +86,36 @@ const PokeGame = (props) => {
     </div>
   );
 
-  const gameJSX = <></>;
+  const cardsJSX = (
+    <div className="PokeGame-players-card-lists-container">
+      <div className={`PokeGame-player-Poke-card-list-container left`}>
+        <StackCards card={player1Cards[0]} />
+      </div>
+
+      <div className={`PokeGame-player-Poke-card-list-container right`}>
+        <StackCards card={player2Cards[0]} />
+      </div>
+    </div>
+  );
+
+  const scoresJSX = (
+    <div className="PokeGame-players-score-container">
+      <div className="PokeGame-individual-player-score-container">
+        <p>Player1 : {player1Score}</p>
+      </div>
+
+      <div className="PokeGame-individual-player-score-container">
+        <p>Player2 : {player2Score}</p>
+      </div>
+    </div>
+  );
+
+  const gameJSX = (
+    <div className="PokeGame">
+      {cardsJSX}
+      {scoresJSX}
+    </div>
+  );
 
   return <>{hasGameStarted ? gameJSX : preGameJSX}</>;
 };

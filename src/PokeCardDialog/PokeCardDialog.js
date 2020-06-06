@@ -1,34 +1,13 @@
 import React from "react";
 import Dialog from "@material-ui/core/Dialog";
 import DialogTitle from "@material-ui/core/DialogTitle";
-import ListItemText from "@material-ui/core/ListItemText";
-import ListItem from "@material-ui/core/ListItem";
 import "./PokeCardDialog.css";
-import InvertedBarChart from "../InvertedBarChart/InvertedBarChart";
+import PokemonAdvancedStats from "../PokemonAdvancedStats/PokemonAdvancedStats";
 
 const PokeCardDialog = (props) => {
-  const chartInput = [];
-
   const handleClose = () => {
     props.closeDialog();
   };
-
-  const listItems = [];
-
-  for (let dataPoint of props.data.stats) {
-    const name = dataPoint.stat.name;
-    const value = dataPoint.base_stat;
-    chartInput.push({
-      name: name,
-      value: value,
-    });
-    listItems.push(
-      <ListItem key={name}>
-        <ListItemText primary={name} secondary={value} />
-      </ListItem>
-    );
-  }
-
   return (
     <div>
       <Dialog
@@ -44,7 +23,10 @@ const PokeCardDialog = (props) => {
         </DialogTitle>
         <div className="PokeCardDialog-img-container"> {props.imgJSX}</div>
         <div className="PokeCardDialog-inverted-chart-container">
-          <InvertedBarChart data={chartInput} />
+          <PokemonAdvancedStats
+            stats={props.data.stats}
+            invertedChart={props.invertedChart}
+          />
         </div>
       </Dialog>
     </div>

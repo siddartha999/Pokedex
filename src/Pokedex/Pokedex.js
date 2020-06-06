@@ -33,7 +33,11 @@ const Pokedex = (props) => {
   };
 
   const pokeCardJSX = currentPagePokemonList.map((pokemon) => {
-    return <PokeCard data={pokemon} key={pokemon.id} />;
+    return (
+      <div className="Pokedex-PokeCard-container" key={pokemon.id}>
+        <PokeCard data={pokemon} invertedChart displayExperience />
+      </div>
+    );
   });
 
   return (
