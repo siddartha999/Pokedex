@@ -6,6 +6,7 @@ const PokemonAdvancedStats = (props) => {
   const stats = props.stats;
   const chartInput = [];
   const isChartInverted = props.invertedChart;
+
   for (let dataPoint of stats) {
     const name = dataPoint.stat.name;
     const value = dataPoint.base_stat;
@@ -16,7 +17,13 @@ const PokemonAdvancedStats = (props) => {
   }
 
   const invertedChartJSX = <InvertedBarChart data={chartInput} />;
-  const straightChartJSX = <StraightBarChart data={chartInput} />;
+  const straightChartJSX = (
+    <StraightBarChart
+      data={chartInput}
+      statSelected={props.statSelected}
+      isStatSelected={props.isStatSelected}
+    />
+  );
 
   return <>{isChartInverted ? invertedChartJSX : straightChartJSX}</>;
 };

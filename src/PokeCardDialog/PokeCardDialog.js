@@ -8,8 +8,15 @@ const PokeCardDialog = (props) => {
   const handleClose = () => {
     props.closeDialog();
   };
+
+  const styleObj = {
+    backgroundImage: `url(${props.imgSrc})`,
+    backgroundRepeat: "no-repeat",
+    backgroundSize: "cover",
+  };
+
   return (
-    <div>
+    <div className="PokeCardDialog" style={styleObj}>
       <Dialog
         onClose={handleClose}
         aria-labelledby="simple-dialog-title"
@@ -21,8 +28,10 @@ const PokeCardDialog = (props) => {
         >
           {props.data.name}
         </DialogTitle>
-        <div className="PokeCardDialog-img-container"> {props.imgJSX}</div>
-        <div className="PokeCardDialog-inverted-chart-container">
+        <div
+          className="PokeCardDialog-inverted-chart-container"
+          style={styleObj}
+        >
           <PokemonAdvancedStats
             stats={props.data.stats}
             invertedChart={props.invertedChart}

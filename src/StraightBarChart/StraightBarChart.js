@@ -14,10 +14,18 @@ const styleObj = {
 
 const StraightBarChart = (props) => {
   let maxNum = props.maxNum || Number.MIN_SAFE_INTEGER;
+  const isStatSelected = props.isStatSelected;
 
   if (!props.maxNum) {
     maxNum = retrieveMaxNumber(props.data);
   }
+
+  const handleBarClick = (event) => {
+    if (isStatSelected) return;
+    const name = event.target.getAttribute("name");
+    console.log(name);
+    props.statSelected(name);
+  };
 
   const barChartJSX = props.data.map((dataPoint) => {
     const name = dataPoint.name;
@@ -30,8 +38,13 @@ const StraightBarChart = (props) => {
     newStyleObj.height = height * 100 + "%";
 
     return (
-      <div className="StraightBarChart-bar-container">
-        <div style={newStyleObj} title={name + " : " + value} key={name}></div>
+      <div className="StraightBarChart-bar-container" key={name}>
+        <div
+          style={newStyleObj}
+          title={name + " : " + value}
+          onClick={handleBarClick}
+          name={name}
+        ></div>
         <p className="StraightBarChart-bar-name">{name}</p>
       </div>
     );

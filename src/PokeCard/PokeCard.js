@@ -15,18 +15,28 @@ const PokeCard = (props) => {
   const imgSrc = retrievePokemonImage(pokeID);
   const displayAdvancedStats = props.displayAdvancedStats;
   const displayExperienceStat = props.displayExperience;
+  const displayPokemonBgImage = props.displayPokemonBgImage;
+  const pokeCardStyle = {};
+
+  if (displayPokemonBgImage) {
+    pokeCardStyle["backgroundImage"] = `url(${imgSrc})`;
+    pokeCardStyle["backgroundRepeat"] = "no-repeat";
+    pokeCardStyle["backgroundSize"] = "cover";
+  }
 
   const handleToggleDialog = () => {
     setIsDialogOpen(!isDialogOpen);
   };
 
   const imgJSX = (
-    <img
-      className="PokeCard-pokemon-image"
-      src={imgSrc}
-      alt={`${name}`}
-      onClick={handleToggleDialog}
-    ></img>
+    <div className="PokeCard-pokemon-image-container">
+      <img
+        className="PokeCard-pokemon-image"
+        src={imgSrc}
+        alt={`${name}`}
+        onClick={handleToggleDialog}
+      ></img>
+    </div>
   );
 
   const pokeCardDialogJSX = (
@@ -34,7 +44,7 @@ const PokeCard = (props) => {
       open={isDialogOpen}
       closeDialog={handleToggleDialog}
       data={props.data}
-      imgJSX={imgJSX}
+      imgSrc={imgSrc}
       invertedChart={props.invertedChart}
     />
   );
@@ -45,6 +55,8 @@ const PokeCard = (props) => {
       <PokemonAdvancedStats
         stats={props.data.stats}
         invertedChart={props.invertedChart}
+        statSelected={props.statSelected}
+        isStatSelected={props.isStatSelected}
       />
     );
   }
@@ -56,13 +68,12 @@ const PokeCard = (props) => {
   );
 
   return (
-    <div className={`PokeCard ${type}`}>
+    <div className={`PokeCard ${type}`} style={pokeCardStyle}>
       <div className="PokeCard-details-container">
         <div className="PokeCard-title-container">
           <p className="PokeCard-title">{name}</p>
         </div>
-        <div className="PokeCard-pokemon-image-container">{imgJSX}</div>
-
+        {!displayPokemonBgImage && imgJSX}
         <div className="PokeCard-pokemon-basic-details-container">
           <div className="PokeCard-pokemon-type-container PokeCard-pokemon-basic-detail-container">
             <p>Type</p>

@@ -43,10 +43,17 @@ const PokeGame = (props) => {
   const [player2Cards, setPlayer2Cards] = useState([]);
   const [player1Score, setPlayer1Score] = useState(0);
   const [player2Score, setPlayer2Score] = useState(0);
+  const [whoseTurn, setWhoseTurn] = useState(undefined);
+  const [isStatSelected, setIsStatSelected] = useState(false);
+  const [displayAllCards, setDisplayAllCards] = useState(false);
+  const [isGameOver, setIsGameOver] = useState(false);
+  const [displayContinuePlayButton, setDisplayContinuePlayButton] = useState(
+    false
+  );
 
   const startGameHandler = () => {
     setHasGameStarted(!hasGameStarted);
-    const cardsList = generateRandomLists(pokemonList, 2, 2);
+    const cardsList = generateRandomLists(pokemonList, 2, cardsPerGame);
     setPlayer1Cards(cardsList[0]);
     setPlayer2Cards(cardsList[1]);
   };
@@ -55,6 +62,66 @@ const PokeGame = (props) => {
     const val = event.target.parentElement.name;
     if (val) {
       setCardsPerGame(event.target.parentElement.name);
+    }
+  };
+
+  const pickPlayerHandler = () => {
+    const playerRandomlyPicked = Math.ceil(Math.random() * 2);
+    setWhoseTurn(playerRandomlyPicked);
+  };
+
+  const retrieveStat = (obj, statName) => {
+    let score = 0;
+
+    for (let stat of obj) {
+      if (stat.stat.name === statName) {
+        score = stat.base_stat;
+        break;
+      }
+    }
+
+    return score;
+  };
+
+  const determineWinnerOfCurrentRound = (playerOneScore, playerTwoScore) => {
+    if (whoseTurn === 1) {
+      if (playerOneScore <= playerTwoScore) {
+        setWhoseTurn(2);
+        setPlayer2Score(() => player2Score + 1);
+      } else {
+        setPlayer1Score(() => player1Score + 1);
+      }
+    } else {
+      if (playerOneScore >= playerTwoScore) {
+        setWhoseTurn(1);
+        setPlayer1Score(() => player1Score + 1);
+      } else {
+        setPlayer2Score(() => player2Score + 1);
+      }
+    }
+  };
+
+  const statSelected = (statName) => {
+    setIsStatSelected(true);
+    setDisplayAllCards(true);
+    setDisplayContinuePlayButton(true);
+
+    const player1Score = retrieveStat(player1Cards[0].stats, statName);
+    const player2Score = retrieveStat(player2Cards[0].stats, statName);
+
+    console.log(player1Score, player2Score);
+    determineWinnerOfCurrentRound(player1Score, player2Score);
+  };
+
+  const continueGameHandler = () => {
+    setDisplayContinuePlayButton(false);
+    setDisplayAllCards(false);
+    setIsStatSelected(false);
+    player1Cards.shift();
+    player2Cards.shift();
+
+    if (!player1Cards.length || !player2Cards.length) {
+      setIsGameOver(true);
     }
   };
 
@@ -88,14 +155,37 @@ const PokeGame = (props) => {
 
   const cardsJSX = (
     <div className="PokeGame-players-card-lists-container">
-      <div className={`PokeGame-player-Poke-card-list-container left`}>
-        <StackCards card={player1Cards[0]} />
+      <div className={`PokeGame-player-Poke-card-list-container`}>
+        <StackCards
+          card={player1Cards[0]}
+          displayFrontOfCard={whoseTurn === 1 || displayAllCards}
+          statSelected={statSelected}
+          isStatSelected={isStatSelected}
+        />
       </div>
 
-      <div className={`PokeGame-player-Poke-card-list-container right`}>
-        <StackCards card={player2Cards[0]} />
+      <div className={`PokeGame-player-Poke-card-list-container`}>
+        <StackCards
+          card={player2Cards[0]}
+          statSelected={statSelected}
+          isStatSelected={isStatSelected}
+          displayFrontOfCard={whoseTurn === 2 || displayAllCards}
+        />
       </div>
     </div>
+  );
+
+  const playerTurnTextJSX = <p>Player {whoseTurn} Turn</p>;
+
+  const pickPlayerRandomlyButtonJSX = (
+    <button onClick={pickPlayerHandler}>Pick A Random Player To Start</button>
+  );
+
+  const continueGameButtonJSX = (
+    <>
+      <button onClick={continueGameHandler}>Continue For The Next Round</button>
+      <p>Player {whoseTurn} won this round!!!</p>
+    </>
   );
 
   const scoresJSX = (
@@ -103,9 +193,13 @@ const PokeGame = (props) => {
       <div className="PokeGame-individual-player-score-container">
         <p>Player1 : {player1Score}</p>
       </div>
-
+      {whoseTurn ? playerTurnTextJSX : pickPlayerRandomlyButtonJSX}
+      {displayContinuePlayButton && continueGameButtonJSX}
       <div className="PokeGame-individual-player-score-container">
         <p>Player2 : {player2Score}</p>
+      </div>
+      <div>
+        <p>Cards Remaining: {player1Cards ? player1Cards.length : 0}</p>
       </div>
     </div>
   );
@@ -117,7 +211,7 @@ const PokeGame = (props) => {
     </div>
   );
 
-  return <>{hasGameStarted ? gameJSX : preGameJSX}</>;
+  return <>{!hasGameStarted || isGameOver ? preGameJSX : gameJSX}</>;
 };
 
 export default PokeGame;

@@ -1,6 +1,8 @@
 .PokeGame {
   width: 100%;
   height: 90%;
+  display: flex;
+  flex-direction: column;
 }
 
 .PokeGame-winner {
@@ -14,21 +16,15 @@
 }
 
 .PokeGame-players-card-lists-container {
-  height: 80%;
+  height: 75%;
+  justify-content: space-evenly;
+  display: flex;
 }
 
 .PokeGame-player-Poke-card-list-container {
   display: inline-block;
-  width: 25%;
+  width: 20%;
   height: 100%;
-}
-
-.PokeGame-player-Poke-card-list-container.left {
-  float: left;
-}
-
-.PokeGame-player-Poke-card-list-container.right {
-  float: right;
 }
 
 .PokeGame-players-score-container {

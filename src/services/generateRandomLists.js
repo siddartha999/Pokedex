@@ -15,7 +15,6 @@ const generateRandomLists = (list, num, length) => {
     for (let index = 0; index < newList.length; index++) {
       let randomId = retrieveUniqueNumber(selectedIds, list.length);
       newList[index].push({ ...list[randomId] });
-      console.log("retrieving");
     }
     length--;
   }
