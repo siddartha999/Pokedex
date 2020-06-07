@@ -68,7 +68,7 @@
 
 .PokeCard-pokemon-advanced-stats-container {
   width: 100%;
-  height: calc(100% - 15rem);
+  height: calc(100% - 12rem);
   padding-top: 0.5rem;
   display: flex;
   justify-content: space-evenly;

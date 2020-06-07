@@ -32,7 +32,7 @@ const StraightBarChart = (props) => {
     const value = dataPoint.value;
     const newStyleObj = { ...styleObj };
     if (!newStyleObj.width) {
-      newStyleObj.width = "2rem";
+      newStyleObj.width = "1.25rem";
     }
     const height = value / maxNum;
     newStyleObj.height = height * 100 + "%";

@@ -32,6 +32,15 @@ const useStyles = makeStyles((theme) => ({
   active: {
     backgroundColor: "firebrick",
   },
+  pickPlayerButton: {
+    fontFamily: "cursive",
+    fontStyle: "italic",
+    backgroundColor: "blanchedalmond",
+    color: "darkblue",
+    "&:hover": {
+      color: "wheat",
+    },
+  },
 }));
 
 const PokeGame = (props) => {
@@ -46,14 +55,14 @@ const PokeGame = (props) => {
   const [whoseTurn, setWhoseTurn] = useState(undefined);
   const [isStatSelected, setIsStatSelected] = useState(false);
   const [displayAllCards, setDisplayAllCards] = useState(false);
-  const [isGameOver, setIsGameOver] = useState(false);
+  const [areAllCardsOver, setAreAllCardsOver] = useState(false);
   const [displayContinuePlayButton, setDisplayContinuePlayButton] = useState(
     false
   );
 
   const startGameHandler = () => {
-    setHasGameStarted(!hasGameStarted);
-    const cardsList = generateRandomLists(pokemonList, 2, cardsPerGame);
+    setHasGameStarted(true);
+    const cardsList = generateRandomLists(pokemonList, 2, 2);
     setPlayer1Cards(cardsList[0]);
     setPlayer2Cards(cardsList[1]);
   };
@@ -109,109 +118,227 @@ const PokeGame = (props) => {
     const player1Score = retrieveStat(player1Cards[0].stats, statName);
     const player2Score = retrieveStat(player2Cards[0].stats, statName);
 
-    console.log(player1Score, player2Score);
     determineWinnerOfCurrentRound(player1Score, player2Score);
+
+    if (player1Cards.length === 1 || player2Cards.length === 1) {
+      setAreAllCardsOver(true);
+    }
   };
 
   const continueGameHandler = () => {
     setDisplayContinuePlayButton(false);
     setDisplayAllCards(false);
     setIsStatSelected(false);
-    player1Cards.shift();
-    player2Cards.shift();
 
-    if (!player1Cards.length || !player2Cards.length) {
-      setIsGameOver(true);
-    }
+    const newPlayer1Cards = [...player1Cards];
+    const newPlayer2Cards = [...player2Cards];
+    newPlayer1Cards.shift();
+    newPlayer2Cards.shift();
+
+    setPlayer1Cards(newPlayer1Cards);
+    setPlayer2Cards(newPlayer2Cards);
   };
 
-  const preGameJSX = (
-    <div className="PokeGame-start-game-button-container">
-      <div className="PokeGame-start-game-button-group-container">
-        <ButtonGroup
+  const endGameHandler = () => {
+    setHasGameStarted(false);
+    setAreAllCardsOver(false);
+    setDisplayAllCards(false);
+    setPlayer1Score(0);
+    setPlayer2Score(0);
+    setIsStatSelected(false);
+    setDisplayContinuePlayButton(false);
+    setWhoseTurn(undefined);
+  };
+
+  const generatePreGameJSX = () => {
+    const preGameJSX = (
+      <div className="PokeGame-start-game-button-container">
+        <div className="PokeGame-start-game-button-group-container">
+          <ButtonGroup
+            variant="contained"
+            color="primary"
+            aria-label="contained primary button group"
+            className={classes.root}
+          >
+            {ALLOWED_CARDS_PER_GAME.map((val) => (
+              <Button name={val} key={val} onClick={handleCardsButtonClicked}>
+                {val} Cards Each
+              </Button>
+            ))}
+          </ButtonGroup>
+        </div>
+        <Button
           variant="contained"
           color="primary"
-          aria-label="contained primary button group"
-          className={classes.root}
+          size="large"
+          className={classes.button}
+          onClick={startGameHandler}
         >
-          {ALLOWED_CARDS_PER_GAME.map((val) => (
-            <Button name={val} key={val} onClick={handleCardsButtonClicked}>
-              {val} Cards Each
-            </Button>
-          ))}
-        </ButtonGroup>
+          Start Game : {cardsPerGame} Cards
+        </Button>
       </div>
-      <Button
-        variant="contained"
-        color="primary"
-        size="large"
-        className={classes.button}
-        onClick={startGameHandler}
+    );
+
+    return preGameJSX;
+  };
+
+  const generateGameJSX = () => {
+    const cardsJSX = (
+      <div className="PokeGame-players-card-lists-container">
+        <div className={`PokeGame-player-Poke-card-list-container`}>
+          <StackCards
+            card={player1Cards && player1Cards[0]}
+            displayFrontOfCard={whoseTurn === 1 || displayAllCards}
+            statSelected={statSelected}
+            isStatSelected={isStatSelected}
+          />
+        </div>
+
+        <div className={`PokeGame-player-Poke-card-list-container`}>
+          <StackCards
+            card={player2Cards && player2Cards[0]}
+            statSelected={statSelected}
+            isStatSelected={isStatSelected}
+            displayFrontOfCard={whoseTurn === 2 || displayAllCards}
+          />
+        </div>
+      </div>
+    );
+
+    const playerTurnTextJSX = (
+      <div className="PokeGame-player-turn-indicator-container">
+        <p className="PokeGame-player-turn-indicator-text PokeGame-stats-text">
+          Player {whoseTurn} Turn
+        </p>
+      </div>
+    );
+
+    const pickPlayerRandomlyButtonJSX = (
+      <div className="PokeGame-pick-player-to-start-button-container">
+        <Button
+          variant="contained"
+          color="primary"
+          size="large"
+          className={classes.pickPlayerButton}
+          onClick={pickPlayerHandler}
+        >
+          Pick A Random Player To Start
+        </Button>
+      </div>
+    );
+
+    const continueGameButtonJSX = (
+      <div
+        className={`PokeGame-continue-game-button-container ${
+          !displayContinuePlayButton && " hide"
+        }`}
       >
-        Start Game : {cardsPerGame} Cards
-      </Button>
-    </div>
-  );
-
-  const cardsJSX = (
-    <div className="PokeGame-players-card-lists-container">
-      <div className={`PokeGame-player-Poke-card-list-container`}>
-        <StackCards
-          card={player1Cards[0]}
-          displayFrontOfCard={whoseTurn === 1 || displayAllCards}
-          statSelected={statSelected}
-          isStatSelected={isStatSelected}
-        />
+        <Button
+          variant="contained"
+          color="primary"
+          size="large"
+          className={classes.pickPlayerButton}
+          onClick={continueGameHandler}
+        >
+          Continue For The Next Round
+        </Button>
       </div>
+    );
 
-      <div className={`PokeGame-player-Poke-card-list-container`}>
-        <StackCards
-          card={player2Cards[0]}
-          statSelected={statSelected}
-          isStatSelected={isStatSelected}
-          displayFrontOfCard={whoseTurn === 2 || displayAllCards}
-        />
+    const endGameButtonJSX = (
+      <div
+        className={`PokeGame-end-game-button-container ${
+          !areAllCardsOver && " hide"
+        }`}
+      >
+        <Button
+          variant="contained"
+          color="primary"
+          size="large"
+          className={classes.pickPlayerButton}
+          onClick={endGameHandler}
+        >
+          End Game
+        </Button>
       </div>
-    </div>
-  );
+    );
 
-  const playerTurnTextJSX = <p>Player {whoseTurn} Turn</p>;
-
-  const pickPlayerRandomlyButtonJSX = (
-    <button onClick={pickPlayerHandler}>Pick A Random Player To Start</button>
-  );
-
-  const continueGameButtonJSX = (
-    <>
-      <button onClick={continueGameHandler}>Continue For The Next Round</button>
-      <p>Player {whoseTurn} won this round!!!</p>
-    </>
-  );
-
-  const scoresJSX = (
-    <div className="PokeGame-players-score-container">
-      <div className="PokeGame-individual-player-score-container">
-        <p>Player1 : {player1Score}</p>
+    const roundWinnerJSX = (
+      <div
+        className={`PokeGame-round-winner-indicator-container ${
+          !displayContinuePlayButton && " hide"
+        }`}
+      >
+        <p className="PokeGame-round-winner-indicator PokeGame-stats-text">
+          Player {whoseTurn} won this round!
+        </p>
       </div>
-      {whoseTurn ? playerTurnTextJSX : pickPlayerRandomlyButtonJSX}
-      {displayContinuePlayButton && continueGameButtonJSX}
-      <div className="PokeGame-individual-player-score-container">
-        <p>Player2 : {player2Score}</p>
-      </div>
-      <div>
-        <p>Cards Remaining: {player1Cards ? player1Cards.length : 0}</p>
-      </div>
-    </div>
-  );
+    );
 
-  const gameJSX = (
-    <div className="PokeGame">
-      {cardsJSX}
-      {scoresJSX}
-    </div>
-  );
+    const statsArenaJSX = (
+      <div className="PokeGame-stats-arena">
+        <div className="PokeGame-stats-arena-header-container">
+          {!whoseTurn && pickPlayerRandomlyButtonJSX}
+          {areAllCardsOver && generateWinnerJSX()}
+          {areAllCardsOver ? endGameButtonJSX : continueGameButtonJSX}
+        </div>
+        <div className="PokeGame-players-score-container">
+          <div className="PokeGame-individual-player-score-container">
+            <p className="PokeGame-stats-text">Player1 : {player1Score}</p>
+          </div>
+          <div className="PokeGame-individual-player-score-container">
+            <p className="PokeGame-stats-text">Player2 : {player2Score}</p>
+          </div>
+          {whoseTurn && !areAllCardsOver && playerTurnTextJSX}
+          <div className="PokeGame-cards-remaining-indicator-container">
+            <p className="PokeGame-stats-text">
+              Cards Remaining: {player1Cards ? player1Cards.length - 1 : 0}
+            </p>
+          </div>
+          {roundWinnerJSX}
+        </div>
+      </div>
+    );
 
-  return <>{!hasGameStarted || isGameOver ? preGameJSX : gameJSX}</>;
+    const gameJSX = (
+      <div className="PokeGame">
+        {cardsJSX}
+        {statsArenaJSX}
+      </div>
+    );
+
+    return gameJSX;
+  };
+
+  const generateWinnerJSX = () => {
+    let winnerJSX;
+    let winner;
+    if (player1Score > player2Score) {
+      winner = 1;
+    } else if (player2Score > player1Score) {
+      winner = 2;
+    } else {
+      winnerJSX = (
+        <div className="PokeGame-winner-message-container">
+          <p className="PokeGame-draw-message">It's a DRAW!!! </p>
+        </div>
+      );
+    }
+
+    if (!winnerJSX) {
+      winnerJSX = (
+        <div className="PokeGame-winner-message-container">
+          <p className="PokeGame-winner-message">
+            Congratulations player {winner} for the victory!!!
+          </p>
+        </div>
+      );
+    }
+
+    return winnerJSX;
+  };
+
+  return <>{!hasGameStarted ? generatePreGameJSX() : generateGameJSX()}</>;
 };
 
 export default PokeGame;
