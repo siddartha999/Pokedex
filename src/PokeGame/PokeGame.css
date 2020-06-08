@@ -1,3 +1,11 @@
+.PokeGame-start-game-screen {
+  height: 80%;
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
 .PokeGame {
   width: 100%;
   height: 90%;
@@ -90,6 +98,10 @@
   color: greenyellow;
   font-weight: bold;
   font-size: 1.25rem;
+}
+
+.PokeGame-player-turn-indicator-container .PokeGame-player-turn-indicator-text {
+  color: gold;
 }
 
 .PokeGame-draw-message {

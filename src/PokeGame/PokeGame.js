@@ -17,10 +17,9 @@ const useStyles = makeStyles((theme) => ({
       margin: theme.spacing(1),
     },
   },
-  button: {
-    margin: theme.spacing(1),
+  startGameButton: {
     height: "5rem",
-    width: "50%",
+    width: "100%",
     minWidth: "5rem",
     fontSize: "1.25rem",
     fontFamily: "cursive",
@@ -54,17 +53,16 @@ const PokeGame = (props) => {
   const [player2Score, setPlayer2Score] = useState(0);
   const [whoseTurn, setWhoseTurn] = useState(undefined);
   const [isStatSelected, setIsStatSelected] = useState(false);
-  const [displayAllCards, setDisplayAllCards] = useState(false);
-  const [areAllCardsOver, setAreAllCardsOver] = useState(false);
-  const [displayContinuePlayButton, setDisplayContinuePlayButton] = useState(
-    false
+  const [cardsRemaining, setCardsRemaining] = useState(
+    ALLOWED_CARDS_PER_GAME[0]
   );
 
   const startGameHandler = () => {
     setHasGameStarted(true);
-    const cardsList = generateRandomLists(pokemonList, 2, 2);
+    const cardsList = generateRandomLists(pokemonList, 2, cardsPerGame);
     setPlayer1Cards(cardsList[0]);
     setPlayer2Cards(cardsList[1]);
+    setCardsRemaining(cardsList[0].length);
   };
 
   const handleCardsButtonClicked = (event) => {
@@ -112,22 +110,15 @@ const PokeGame = (props) => {
 
   const statSelected = (statName) => {
     setIsStatSelected(true);
-    setDisplayAllCards(true);
-    setDisplayContinuePlayButton(true);
+    setCardsRemaining(() => cardsRemaining - 1);
 
     const player1Score = retrieveStat(player1Cards[0].stats, statName);
     const player2Score = retrieveStat(player2Cards[0].stats, statName);
 
     determineWinnerOfCurrentRound(player1Score, player2Score);
-
-    if (player1Cards.length === 1 || player2Cards.length === 1) {
-      setAreAllCardsOver(true);
-    }
   };
 
   const continueGameHandler = () => {
-    setDisplayContinuePlayButton(false);
-    setDisplayAllCards(false);
     setIsStatSelected(false);
 
     const newPlayer1Cards = [...player1Cards];
@@ -141,41 +132,40 @@ const PokeGame = (props) => {
 
   const endGameHandler = () => {
     setHasGameStarted(false);
-    setAreAllCardsOver(false);
-    setDisplayAllCards(false);
     setPlayer1Score(0);
     setPlayer2Score(0);
     setIsStatSelected(false);
-    setDisplayContinuePlayButton(false);
     setWhoseTurn(undefined);
   };
 
   const generatePreGameJSX = () => {
     const preGameJSX = (
-      <div className="PokeGame-start-game-button-container">
-        <div className="PokeGame-start-game-button-group-container">
-          <ButtonGroup
+      <div className="PokeGame-start-game-screen">
+        <div className="PokeGame-start-game-button-container">
+          <div className="PokeGame-start-game-button-group-container">
+            <ButtonGroup
+              variant="contained"
+              color="primary"
+              aria-label="contained primary button group"
+              className={classes.root}
+            >
+              {ALLOWED_CARDS_PER_GAME.map((val) => (
+                <Button name={val} key={val} onClick={handleCardsButtonClicked}>
+                  {val} Cards Each
+                </Button>
+              ))}
+            </ButtonGroup>
+          </div>
+          <Button
             variant="contained"
             color="primary"
-            aria-label="contained primary button group"
-            className={classes.root}
+            size="large"
+            className={classes.startGameButton}
+            onClick={startGameHandler}
           >
-            {ALLOWED_CARDS_PER_GAME.map((val) => (
-              <Button name={val} key={val} onClick={handleCardsButtonClicked}>
-                {val} Cards Each
-              </Button>
-            ))}
-          </ButtonGroup>
+            Start Game : {cardsPerGame} Cards
+          </Button>
         </div>
-        <Button
-          variant="contained"
-          color="primary"
-          size="large"
-          className={classes.button}
-          onClick={startGameHandler}
-        >
-          Start Game : {cardsPerGame} Cards
-        </Button>
       </div>
     );
 
@@ -188,7 +178,7 @@ const PokeGame = (props) => {
         <div className={`PokeGame-player-Poke-card-list-container`}>
           <StackCards
             card={player1Cards && player1Cards[0]}
-            displayFrontOfCard={whoseTurn === 1 || displayAllCards}
+            displayFrontOfCard={whoseTurn === 1 || isStatSelected}
             statSelected={statSelected}
             isStatSelected={isStatSelected}
           />
@@ -199,7 +189,7 @@ const PokeGame = (props) => {
             card={player2Cards && player2Cards[0]}
             statSelected={statSelected}
             isStatSelected={isStatSelected}
-            displayFrontOfCard={whoseTurn === 2 || displayAllCards}
+            displayFrontOfCard={whoseTurn === 2 || isStatSelected}
           />
         </div>
       </div>
@@ -230,7 +220,7 @@ const PokeGame = (props) => {
     const continueGameButtonJSX = (
       <div
         className={`PokeGame-continue-game-button-container ${
-          !displayContinuePlayButton && " hide"
+          !isStatSelected && " hide"
         }`}
       >
         <Button
@@ -246,11 +236,7 @@ const PokeGame = (props) => {
     );
 
     const endGameButtonJSX = (
-      <div
-        className={`PokeGame-end-game-button-container ${
-          !areAllCardsOver && " hide"
-        }`}
-      >
+      <div className="PokeGame-end-game-button-container">
         <Button
           variant="contained"
           color="primary"
@@ -266,7 +252,7 @@ const PokeGame = (props) => {
     const roundWinnerJSX = (
       <div
         className={`PokeGame-round-winner-indicator-container ${
-          !displayContinuePlayButton && " hide"
+          !isStatSelected && " hide"
         }`}
       >
         <p className="PokeGame-round-winner-indicator PokeGame-stats-text">
@@ -279,8 +265,8 @@ const PokeGame = (props) => {
       <div className="PokeGame-stats-arena">
         <div className="PokeGame-stats-arena-header-container">
           {!whoseTurn && pickPlayerRandomlyButtonJSX}
-          {areAllCardsOver && generateWinnerJSX()}
-          {areAllCardsOver ? endGameButtonJSX : continueGameButtonJSX}
+          {!cardsRemaining && generateWinnerJSX()}
+          {!cardsRemaining ? endGameButtonJSX : continueGameButtonJSX}
         </div>
         <div className="PokeGame-players-score-container">
           <div className="PokeGame-individual-player-score-container">
@@ -289,10 +275,10 @@ const PokeGame = (props) => {
           <div className="PokeGame-individual-player-score-container">
             <p className="PokeGame-stats-text">Player2 : {player2Score}</p>
           </div>
-          {whoseTurn && !areAllCardsOver && playerTurnTextJSX}
+          {whoseTurn && cardsRemaining && playerTurnTextJSX}
           <div className="PokeGame-cards-remaining-indicator-container">
             <p className="PokeGame-stats-text">
-              Cards Remaining: {player1Cards ? player1Cards.length - 1 : 0}
+              Cards Remaining: {cardsRemaining}
             </p>
           </div>
           {roundWinnerJSX}
