@@ -1,6 +1,5 @@
 import axios from "axios";
 const POKEMON_API_URL = `https://pokeapi.co/api/v2/pokemon?offset=`;
-
 const retrieveData = async (list) => {
   let max_requests_made = 10;
   let offset = 0;
@@ -35,17 +34,14 @@ const retrieveData = async (list) => {
         const urlSplit = pokemon.config.url.split("/");
         const pokeID = urlSplit[urlSplit.length - 2];
         const data = pokemon.data;
-        let type = "normal";
-        if (data.types && data.types.length) {
-          type = data.types[0].type.name;
-        }
+
         list.push({
           id: pokeID,
           name: data.name,
           height: data.height,
           weight: data.weight,
           experience: data.base_experience,
-          type: type,
+          types: data.types,
           stats: data.stats,
         });
       }

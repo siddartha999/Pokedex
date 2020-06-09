@@ -15,21 +15,25 @@
 }
 
 .PokeGame-players-card-lists-container {
-  height: 75%;
+  height: 85%;
   width: 80%;
   justify-content: space-evenly;
   display: flex;
+  align-items: center;
 }
 
-.PokeGame-player-Poke-card-list-container {
+.PokeGame-player-poke-card-container {
   width: 30%;
+  height: 80%;
+}
+
+.PokeGame-player-poke-card-backside-image {
   height: 100%;
 }
 
 .PokeGame-stats-arena {
-  height: 20%;
+  height: 15%;
   width: 90%;
-  margin-top: 5%;
   background-color: #6b5b95;
 }
 
@@ -52,6 +56,7 @@
 
 .PokeGame-round-winner-indicator-container {
   flex: 1;
+  align-self: center;
 }
 
 .PokeGame-round-winner-indicator-container.hide {

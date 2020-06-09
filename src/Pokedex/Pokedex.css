@@ -12,9 +12,9 @@
 }
 
 .Pokedex-PokeCard-container {
-  width: 15rem;
-  min-width: 15rem;
+  width: 20rem;
+  min-width: 18rem;
+  height: 24rem;
   margin: 3rem;
-  box-shadow: 7px 10px 12px -5px rgba(0, 0, 0, 0.56);
   text-align: center;
 }

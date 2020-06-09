@@ -1,21 +1,25 @@
 .PokeCard {
   width: 100%;
-  height: 100%;
-  background-color: #eeeeee;
+  height: 70%;
+  border-radius: 0.25rem;
+  box-shadow: 7px 10px 12px -5px rgba(0, 0, 0, 0.56);
 }
 
 .PokeCard-details-container {
-  height: calc(100% - 2rem);
-  padding: 1rem;
+  height: calc(100% - 4rem);
+  padding: 2rem;
 }
 
 .PokeCard-pokemon-image-container {
   width: 100%;
-  height: 8rem;
+  height: 30%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
 .PokeCard-pokemon-image {
-  max-width: 50%;
+  height: 100%;
   position: relative;
   top: 1rem;
 }
@@ -27,6 +31,24 @@
 .PokeCard-pokemon-image:hover {
   transform: scale(1.25);
   opacity: 0.7;
+}
+
+.PokeCard-pokemon-type-image-container {
+  display: flex;
+  justify-content: space-evenly;
+}
+
+.PokeCard-pokemon-type-image {
+  width: 25%;
+}
+
+.PokeCard-pokemon-type-text-container {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: space-evenly;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 .PokeCard-title-container {
@@ -43,12 +65,17 @@
 .PokeCard-pokemon-basic-details-container {
   width: 100%;
   height: 6rem;
+  border-bottom: 1px solid lightgrey;
 }
 
 .PokeCard-pokemon-basic-detail-container {
   display: inline-block;
-  width: 33%;
+  width: 25%;
   height: 100%;
+}
+
+.PokeCard-pokemon-type-container {
+  width: 50%;
 }
 
 .PokeCard-pokemon-basic-detail {
@@ -68,11 +95,18 @@
 
 .PokeCard-pokemon-advanced-stats-container {
   width: 100%;
-  height: calc(100% - 12rem);
+  height: calc(100% - 11rem);
   padding-top: 0.5rem;
   display: flex;
   justify-content: space-evenly;
   align-items: baseline;
+}
+
+.PokeCard-pokemon-details-text {
+  font-family: monospace;
+  font-weight: bolder;
+  font-variant: all-small-caps;
+  font-size: 1.5rem;
 }
 
 .normal {

@@ -23,7 +23,6 @@ const StraightBarChart = (props) => {
   const handleBarClick = (event) => {
     if (isStatSelected) return;
     const name = event.target.getAttribute("name");
-    console.log(name);
     props.statSelected(name);
   };
 

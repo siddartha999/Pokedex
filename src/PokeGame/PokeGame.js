@@ -3,8 +3,9 @@ import Button from "@material-ui/core/Button";
 import ButtonGroup from "@material-ui/core/ButtonGroup";
 import { makeStyles } from "@material-ui/core/styles";
 import generateRandomLists from "../services/generateRandomLists";
-import StackCards from "../StackCards/StackCards";
+import PokeCard from "../PokeCard/PokeCard";
 import "./PokeGame.css";
+import pokeCardBack from "../images/pokeCardBack-2.jpg";
 
 const ALLOWED_CARDS_PER_GAME = [20, 50, 100];
 
@@ -173,24 +174,42 @@ const PokeGame = (props) => {
   };
 
   const generateGameJSX = () => {
+    const backOfCardJSX = (
+      <img
+        className="PokeGame-player-poke-card-backside-image"
+        src={pokeCardBack}
+        alt="poke-card-back-side"
+      />
+    );
+
     const cardsJSX = (
       <div className="PokeGame-players-card-lists-container">
-        <div className={`PokeGame-player-Poke-card-list-container`}>
-          <StackCards
-            card={player1Cards && player1Cards[0]}
-            displayFrontOfCard={whoseTurn === 1 || isStatSelected}
-            statSelected={statSelected}
-            isStatSelected={isStatSelected}
-          />
+        <div className="PokeGame-player-poke-card-container">
+          {whoseTurn === 1 || isStatSelected ? (
+            <PokeCard
+              data={player1Cards[0]}
+              displayAdvancedStats
+              statSelected={statSelected}
+              isStatSelected={isStatSelected}
+              pokemonTypeImages={props.pokemonTypeImages}
+            />
+          ) : (
+            backOfCardJSX
+          )}
         </div>
 
-        <div className={`PokeGame-player-Poke-card-list-container`}>
-          <StackCards
-            card={player2Cards && player2Cards[0]}
-            statSelected={statSelected}
-            isStatSelected={isStatSelected}
-            displayFrontOfCard={whoseTurn === 2 || isStatSelected}
-          />
+        <div className="PokeGame-player-poke-card-container">
+          {whoseTurn === 2 || isStatSelected ? (
+            <PokeCard
+              data={player2Cards[0]}
+              displayAdvancedStats
+              statSelected={statSelected}
+              isStatSelected={isStatSelected}
+              pokemonTypeImages={props.pokemonTypeImages}
+            />
+          ) : (
+            backOfCardJSX
+          )}
         </div>
       </div>
     );
