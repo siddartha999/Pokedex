@@ -45,11 +45,11 @@ const NavBar = () => {
           variant="h6"
           className={classes.title}
           component={NavLink}
-          to="/pokegame"
+          to="/pokecardgame"
           exact
           activeClassName={classes["active-link"]}
         >
-          PokeGame
+          PokeCardGame
         </Typography>
 
         <Typography

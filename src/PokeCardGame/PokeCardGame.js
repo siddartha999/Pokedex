@@ -4,8 +4,9 @@ import ButtonGroup from "@material-ui/core/ButtonGroup";
 import { makeStyles } from "@material-ui/core/styles";
 import generateRandomLists from "../services/generateRandomLists";
 import PokeCard from "../PokeCard/PokeCard";
-import "./PokeGame.css";
+import "./PokeCardGame.css";
 import pokeCardBack from "../images/pokeCardBack-2.jpg";
+import { Prompt } from "react-router-dom";
 
 const ALLOWED_CARDS_PER_GAME = [20, 50, 100];
 
@@ -43,7 +44,7 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-const PokeGame = (props) => {
+const PokeCardGame = (props) => {
   const classes = useStyles();
   const pokemonList = props.pokemonList;
   const [hasGameStarted, setHasGameStarted] = useState(false);
@@ -141,9 +142,9 @@ const PokeGame = (props) => {
 
   const generatePreGameJSX = () => {
     const preGameJSX = (
-      <div className="PokeGame-start-game-screen">
-        <div className="PokeGame-start-game-button-container">
-          <div className="PokeGame-start-game-button-group-container">
+      <div className="PokeCardGame-start-game-screen">
+        <div className="PokeCardGame-start-game-button-container">
+          <div className="PokeCardGame-start-game-button-group-container">
             <ButtonGroup
               variant="contained"
               color="primary"
@@ -176,15 +177,15 @@ const PokeGame = (props) => {
   const generateGameJSX = () => {
     const backOfCardJSX = (
       <img
-        className="PokeGame-player-poke-card-backside-image"
+        className="PokeCardGame-player-poke-card-backside-image"
         src={pokeCardBack}
         alt="poke-card-back-side"
       />
     );
 
     const cardsJSX = (
-      <div className="PokeGame-players-card-lists-container">
-        <div className="PokeGame-player-poke-card-container">
+      <div className="PokeCardGame-players-card-lists-container">
+        <div className="PokeCardGame-player-poke-card-container">
           {whoseTurn === 1 || selectedStat ? (
             <PokeCard
               data={player1Cards[0]}
@@ -198,7 +199,7 @@ const PokeGame = (props) => {
           )}
         </div>
 
-        <div className="PokeGame-player-poke-card-container">
+        <div className="PokeCardGame-player-poke-card-container">
           {whoseTurn === 2 || selectedStat ? (
             <PokeCard
               data={player2Cards[0]}
@@ -215,15 +216,15 @@ const PokeGame = (props) => {
     );
 
     const playerTurnTextJSX = (
-      <div className="PokeGame-player-turn-indicator-container">
-        <p className="PokeGame-player-turn-indicator-text PokeGame-stats-text">
+      <div className="PokeCardGame-player-turn-indicator-container">
+        <p className="PokeCardGame-player-turn-indicator-text PokeCardGame-stats-text">
           Player {whoseTurn} Turn
         </p>
       </div>
     );
 
     const pickPlayerRandomlyButtonJSX = (
-      <div className="PokeGame-pick-player-to-start-button-container">
+      <div className="PokeCardGame-pick-player-to-start-button-container">
         <Button
           variant="contained"
           color="primary"
@@ -238,7 +239,7 @@ const PokeGame = (props) => {
 
     const continueGameButtonJSX = (
       <div
-        className={`PokeGame-continue-game-button-container ${
+        className={`PokeCardGame-continue-game-button-container ${
           !selectedStat && " hide"
         }`}
       >
@@ -255,7 +256,7 @@ const PokeGame = (props) => {
     );
 
     const endGameButtonJSX = (
-      <div className="PokeGame-end-game-button-container">
+      <div className="PokeCardGame-end-game-button-container">
         <Button
           variant="contained"
           color="primary"
@@ -270,33 +271,33 @@ const PokeGame = (props) => {
 
     const roundWinnerJSX = (
       <div
-        className={`PokeGame-round-winner-indicator-container ${
+        className={`PokeCardGame-round-winner-indicator-container ${
           !selectedStat && " hide"
         }`}
       >
-        <p className="PokeGame-round-winner-indicator PokeGame-stats-text">
+        <p className="PokeCardGame-round-winner-indicator PokeCardGame-stats-text">
           Player {whoseTurn} won this round!
         </p>
       </div>
     );
 
     const statsArenaJSX = (
-      <div className="PokeGame-stats-arena">
-        <div className="PokeGame-stats-arena-header-container">
+      <div className="PokeCardGame-stats-arena">
+        <div className="PokeCardGame-stats-arena-header-container">
           {!whoseTurn && pickPlayerRandomlyButtonJSX}
           {!cardsRemaining && generateWinnerJSX()}
           {!cardsRemaining ? endGameButtonJSX : continueGameButtonJSX}
         </div>
-        <div className="PokeGame-players-score-container">
-          <div className="PokeGame-individual-player-score-container">
-            <p className="PokeGame-stats-text">Player1 : {player1Score}</p>
+        <div className="PokeCardGame-players-score-container">
+          <div className="PokeCardGame-individual-player-score-container">
+            <p className="PokeCardGame-stats-text">Player1 : {player1Score}</p>
           </div>
-          <div className="PokeGame-individual-player-score-container">
-            <p className="PokeGame-stats-text">Player2 : {player2Score}</p>
+          <div className="PokeCardGame-individual-player-score-container">
+            <p className="PokeCardGame-stats-text">Player2 : {player2Score}</p>
           </div>
           {whoseTurn && cardsRemaining ? playerTurnTextJSX : null}
-          <div className="PokeGame-cards-remaining-indicator-container">
-            <p className="PokeGame-stats-text">
+          <div className="PokeCardGame-cards-remaining-indicator-container">
+            <p className="PokeCardGame-stats-text">
               Cards Remaining: {cardsRemaining}
             </p>
           </div>
@@ -306,7 +307,7 @@ const PokeGame = (props) => {
     );
 
     const gameJSX = (
-      <div className="PokeGame">
+      <div className="PokeCardGame">
         {cardsJSX}
         {statsArenaJSX}
       </div>
@@ -324,16 +325,16 @@ const PokeGame = (props) => {
       winner = 2;
     } else {
       winnerJSX = (
-        <div className="PokeGame-winner-message-container">
-          <p className="PokeGame-draw-message">It's a DRAW!!! </p>
+        <div className="PokeCardGame-winner-message-container">
+          <p className="PokeCardGame-draw-message">It's a DRAW!!! </p>
         </div>
       );
     }
 
     if (!winnerJSX) {
       winnerJSX = (
-        <div className="PokeGame-winner-message-container">
-          <p className="PokeGame-winner-message">
+        <div className="PokeCardGame-winner-message-container">
+          <p className="PokeCardGame-winner-message">
             Congratulations player {winner} for the victory!!!
           </p>
         </div>
@@ -343,7 +344,19 @@ const PokeGame = (props) => {
     return winnerJSX;
   };
 
-  return <>{!hasGameStarted ? generatePreGameJSX() : generateGameJSX()}</>;
+  return (
+    <>
+      {!hasGameStarted ? generatePreGameJSX() : generateGameJSX()}
+      <Prompt
+        when={hasGameStarted}
+        message={(location) => {
+          if (!location.pathname.endsWith("game")) {
+            return `Are you sure you want to leave the game`;
+          }
+        }}
+      />
+    </>
+  );
 };
 
-export default PokeGame;
+export default PokeCardGame;

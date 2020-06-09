@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import "./App.css";
 import Pokedex from "./Pokedex/Pokedex";
-import PokeGame from "./PokeGame/PokeGame";
+import PokeCardGame from "./PokeCardGame/PokeCardGame";
 import { Route, Switch } from "react-router-dom";
 import NavBar from "./Navbar/Navbar";
 import Compare from "./Compare/Compare";
@@ -84,9 +84,9 @@ function App() {
         />
         <Route
           exact
-          path="/pokegame"
+          path="/pokecardgame"
           render={() => (
-            <PokeGame
+            <PokeCardGame
               pokemonList={pokemonList}
               pokemonTypeImages={POKEMON_TYPES_IMAGES}
             />

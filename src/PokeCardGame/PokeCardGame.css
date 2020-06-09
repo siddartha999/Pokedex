@@ -1,4 +1,4 @@
-.PokeGame-start-game-screen {
+.PokeCardGame-start-game-screen {
   height: 80%;
   width: 100%;
   display: flex;
@@ -6,7 +6,7 @@
   justify-content: center;
 }
 
-.PokeGame {
+.PokeCardGame {
   width: 100%;
   height: 90%;
   display: flex;
@@ -14,7 +14,7 @@
   align-items: center;
 }
 
-.PokeGame-players-card-lists-container {
+.PokeCardGame-players-card-lists-container {
   height: 85%;
   width: 80%;
   justify-content: space-evenly;
@@ -22,49 +22,49 @@
   align-items: center;
 }
 
-.PokeGame-player-poke-card-container {
+.PokeCardGame-player-poke-card-container {
   width: 30%;
   height: 80%;
 }
 
-.PokeGame-player-poke-card-backside-image {
+.PokeCardGame-player-poke-card-backside-image {
   height: 100%;
   width: 100%;
 }
 
-.PokeGame-stats-arena {
+.PokeCardGame-stats-arena {
   height: 15%;
   width: 90%;
   background-color: #6b5b95;
 }
 
-.PokeGame-players-score-container {
+.PokeCardGame-players-score-container {
   display: flex;
   height: 50%;
 }
 
-.PokeGame-individual-player-score-container {
+.PokeCardGame-individual-player-score-container {
   flex: 1;
 }
 
-.PokeGame-cards-remaining-indicator-container {
+.PokeCardGame-cards-remaining-indicator-container {
   flex: 1;
 }
 
-.PokeGame-player-turn-indicator-container {
+.PokeCardGame-player-turn-indicator-container {
   flex: 1;
 }
 
-.PokeGame-round-winner-indicator-container {
+.PokeCardGame-round-winner-indicator-container {
   flex: 1;
   align-self: center;
 }
 
-.PokeGame-round-winner-indicator-container.hide {
+.PokeCardGame-round-winner-indicator-container.hide {
   visibility: hidden;
 }
 
-.PokeGame-stats-arena-header-container {
+.PokeCardGame-stats-arena-header-container {
   display: flex;
   justify-content: space-evenly;
   width: 80%;
@@ -73,7 +73,7 @@
   margin: 0 auto;
 }
 
-.PokeGame-start-game-button {
+.PokeCardGame-start-game-button {
   width: 20rem;
   height: 5rem;
   font-size: 2rem;
@@ -82,23 +82,23 @@
   background-color: antiquewhite;
 }
 
-.PokeGame-start-game-button:hover {
+.PokeCardGame-start-game-button:hover {
   cursor: pointer;
 }
 
-.PokeGame-start-game-button-group-container {
+.PokeCardGame-start-game-button-group-container {
   margin: 2rem;
 }
 
-.PokeGame-continue-game-button-container.hide {
+.PokeCardGame-continue-game-button-container.hide {
   display: none;
 }
 
-.PokeGame-end-game-button-container.hide {
+.PokeCardGame-end-game-button-container.hide {
   display: none;
 }
 
-.PokeGame-winner-message {
+.PokeCardGame-winner-message {
   font-family: cursive;
   font-variant: all-petite-caps;
   color: greenyellow;
@@ -106,11 +106,12 @@
   font-size: 1.25rem;
 }
 
-.PokeGame-player-turn-indicator-container .PokeGame-player-turn-indicator-text {
+.PokeCardGame-player-turn-indicator-container
+  .PokeCardGame-player-turn-indicator-text {
   color: gold;
 }
 
-.PokeGame-draw-message {
+.PokeCardGame-draw-message {
   font-family: cursive;
   font-variant: all-petite-caps;
   color: lightyellow;
@@ -118,7 +119,7 @@
   font-size: 1.25rem;
 }
 
-.PokeGame-stats-text {
+.PokeCardGame-stats-text {
   color: white;
   font-size: 1.25rem;
   font-family: monospace;
