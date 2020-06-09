@@ -37,7 +37,7 @@ const Pokedex = (props) => {
       <div className="Pokedex-PokeCard-container" key={pokemon.id}>
         <PokeCard
           data={pokemon}
-          invertedChart
+          displayAdvancedStats
           displayExperience
           pokemonTypeImages={props.pokemonTypeImages}
         />

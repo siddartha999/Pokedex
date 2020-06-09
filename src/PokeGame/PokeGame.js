@@ -53,7 +53,7 @@ const PokeGame = (props) => {
   const [player1Score, setPlayer1Score] = useState(0);
   const [player2Score, setPlayer2Score] = useState(0);
   const [whoseTurn, setWhoseTurn] = useState(undefined);
-  const [isStatSelected, setIsStatSelected] = useState(false);
+  const [selectedStat, setSelectedStat] = useState(false);
   const [cardsRemaining, setCardsRemaining] = useState(
     ALLOWED_CARDS_PER_GAME[0]
   );
@@ -109,8 +109,8 @@ const PokeGame = (props) => {
     }
   };
 
-  const statSelected = (statName) => {
-    setIsStatSelected(true);
+  const statSelectedHandler = (statName) => {
+    setSelectedStat(statName);
     setCardsRemaining(() => cardsRemaining - 1);
 
     const player1Score = retrieveStat(player1Cards[0].stats, statName);
@@ -120,7 +120,7 @@ const PokeGame = (props) => {
   };
 
   const continueGameHandler = () => {
-    setIsStatSelected(false);
+    setSelectedStat(undefined);
 
     const newPlayer1Cards = [...player1Cards];
     const newPlayer2Cards = [...player2Cards];
@@ -135,7 +135,7 @@ const PokeGame = (props) => {
     setHasGameStarted(false);
     setPlayer1Score(0);
     setPlayer2Score(0);
-    setIsStatSelected(false);
+    setSelectedStat(undefined);
     setWhoseTurn(undefined);
   };
 
@@ -185,12 +185,12 @@ const PokeGame = (props) => {
     const cardsJSX = (
       <div className="PokeGame-players-card-lists-container">
         <div className="PokeGame-player-poke-card-container">
-          {whoseTurn === 1 || isStatSelected ? (
+          {whoseTurn === 1 || selectedStat ? (
             <PokeCard
               data={player1Cards[0]}
               displayAdvancedStats
-              statSelected={statSelected}
-              isStatSelected={isStatSelected}
+              statSelected={statSelectedHandler}
+              selectedStat={selectedStat}
               pokemonTypeImages={props.pokemonTypeImages}
             />
           ) : (
@@ -199,12 +199,12 @@ const PokeGame = (props) => {
         </div>
 
         <div className="PokeGame-player-poke-card-container">
-          {whoseTurn === 2 || isStatSelected ? (
+          {whoseTurn === 2 || selectedStat ? (
             <PokeCard
               data={player2Cards[0]}
               displayAdvancedStats
-              statSelected={statSelected}
-              isStatSelected={isStatSelected}
+              statSelected={statSelectedHandler}
+              selectedStat={selectedStat}
               pokemonTypeImages={props.pokemonTypeImages}
             />
           ) : (
@@ -239,7 +239,7 @@ const PokeGame = (props) => {
     const continueGameButtonJSX = (
       <div
         className={`PokeGame-continue-game-button-container ${
-          !isStatSelected && " hide"
+          !selectedStat && " hide"
         }`}
       >
         <Button
@@ -271,7 +271,7 @@ const PokeGame = (props) => {
     const roundWinnerJSX = (
       <div
         className={`PokeGame-round-winner-indicator-container ${
-          !isStatSelected && " hide"
+          !selectedStat && " hide"
         }`}
       >
         <p className="PokeGame-round-winner-indicator PokeGame-stats-text">
@@ -294,7 +294,7 @@ const PokeGame = (props) => {
           <div className="PokeGame-individual-player-score-container">
             <p className="PokeGame-stats-text">Player2 : {player2Score}</p>
           </div>
-          {whoseTurn && cardsRemaining && playerTurnTextJSX}
+          {whoseTurn && cardsRemaining ? playerTurnTextJSX : null}
           <div className="PokeGame-cards-remaining-indicator-container">
             <p className="PokeGame-stats-text">
               Cards Remaining: {cardsRemaining}

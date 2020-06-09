@@ -1,5 +1,5 @@
 import React from "react";
-import "./StraightBarChart.css";
+import "./BarChart.css";
 import retrieveMaxNumber from "../services/retrieveMaxNumber";
 
 const styleObj = {
@@ -12,18 +12,18 @@ const styleObj = {
   marginRight: "0.25rem",
 };
 
-const StraightBarChart = (props) => {
+const BarChart = (props) => {
   let maxNum = props.maxNum || Number.MIN_SAFE_INTEGER;
-  const isStatSelected = props.isStatSelected;
+  const selectedStat = props.selectedStat;
 
   if (!props.maxNum) {
     maxNum = retrieveMaxNumber(props.data);
   }
 
   const handleBarClick = (event) => {
-    if (isStatSelected) return;
+    if (selectedStat) return;
     const name = event.target.getAttribute("name");
-    props.statSelected(name);
+    props.statSelected && props.statSelected(name);
   };
 
   const barChartJSX = props.data.map((dataPoint) => {
@@ -37,14 +37,15 @@ const StraightBarChart = (props) => {
     newStyleObj.height = height * 100 + "%";
 
     return (
-      <div className="StraightBarChart-bar-container" key={name}>
+      <div className="BarChart-bar-container" key={name}>
         <div
           style={newStyleObj}
           title={name + " : " + value}
           onClick={handleBarClick}
           name={name}
+          className={`${selectedStat === name && "selected"}`}
         ></div>
-        <p className="StraightBarChart-bar-name">{name}</p>
+        <p className="BarChart-bar-name">{name}</p>
       </div>
     );
   });
@@ -52,4 +53,4 @@ const StraightBarChart = (props) => {
   return <>{barChartJSX}</>;
 };
 
-export default StraightBarChart;
+export default BarChart;

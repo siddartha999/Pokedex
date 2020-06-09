@@ -1,11 +1,9 @@
 import React from "react";
-import InvertedBarChart from "../InvertedBarChart/InvertedBarChart";
-import StraightBarChart from "../StraightBarChart/StraightBarChart";
+import BarChart from "../BarChart/BarChart";
 
 const PokemonAdvancedStats = (props) => {
   const stats = props.stats;
   const chartInput = [];
-  const isChartInverted = props.invertedChart;
 
   for (let dataPoint of stats) {
     const name = dataPoint.stat.name;
@@ -16,16 +14,15 @@ const PokemonAdvancedStats = (props) => {
     });
   }
 
-  const invertedChartJSX = <InvertedBarChart data={chartInput} />;
-  const straightChartJSX = (
-    <StraightBarChart
+  const chartJSX = (
+    <BarChart
       data={chartInput}
       statSelected={props.statSelected}
-      isStatSelected={props.isStatSelected}
+      selectedStat={props.selectedStat}
     />
   );
 
-  return <>{isChartInverted ? invertedChartJSX : straightChartJSX}</>;
+  return <>{chartJSX}</>;
 };
 
 export default PokemonAdvancedStats;

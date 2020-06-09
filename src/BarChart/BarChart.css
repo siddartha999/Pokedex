@@ -1,0 +1,13 @@
+.BarChart-bar-container {
+  height: 100%;
+  flex: 1;
+}
+
+.BarChart-bar-name {
+  font-size: 0.75rem;
+  transform: rotate(-45deg);
+}
+
+.BarChart-bar-container .selected {
+  background: mediumvioletred !important;
+}

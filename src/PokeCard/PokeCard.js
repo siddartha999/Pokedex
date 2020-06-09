@@ -1,6 +1,5 @@
 import React, { useState } from "react";
 import "./PokeCard.css";
-import PokeCardDialog from "../PokeCardDialog/PokeCardDialog";
 import retrievePokemonImage from "../services/retrievePokemonImage";
 import PokemonAdvancedStats from "../PokemonAdvancedStats/PokemonAdvancedStats";
 
@@ -47,16 +46,6 @@ const PokeCard = (props) => {
     </div>
   );
 
-  const pokeCardDialogJSX = (
-    <PokeCardDialog
-      open={isDialogOpen}
-      closeDialog={handleToggleDialog}
-      data={props.data}
-      imgSrc={imgSrc}
-      invertedChart={props.invertedChart}
-    />
-  );
-
   let advancedStatsJSX;
   if (displayAdvancedStats) {
     advancedStatsJSX = (
@@ -64,7 +53,7 @@ const PokeCard = (props) => {
         stats={props.data.stats}
         invertedChart={props.invertedChart}
         statSelected={props.statSelected}
-        isStatSelected={props.isStatSelected}
+        selectedStat={props.selectedStat}
       />
     );
   }
@@ -121,7 +110,7 @@ const PokeCard = (props) => {
               !displayAdvancedStats && "PokeCard-hide"
             }`}
           >
-            {displayAdvancedStats ? advancedStatsJSX : pokeCardDialogJSX}
+            {displayAdvancedStats && advancedStatsJSX}
           </div>
         </div>
       </div>
