@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import "./BarChart.css";
 import retrieveMaxNumber from "../services/retrieveMaxNumber";
 
@@ -15,10 +15,21 @@ const styleObj = {
 const BarChart = (props) => {
   let maxNum = props.maxNum || Number.MIN_SAFE_INTEGER;
   const selectedStat = props.selectedStat;
+  const pickStatRandomly = props.pickStatRandomly;
 
   if (!props.maxNum) {
     maxNum = retrieveMaxNumber(props.data);
   }
+
+  useEffect(() => {
+    if (pickStatRandomly) {
+      const randomlyPickedStatIndex = Math.floor(
+        Math.random() * props.data.length
+      );
+      props.statSelected &&
+        props.statSelected(props.data[randomlyPickedStatIndex].name);
+    }
+  }, [pickStatRandomly, props]);
 
   const handleBarClick = (event) => {
     if (selectedStat) return;

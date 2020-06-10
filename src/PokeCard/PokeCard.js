@@ -54,6 +54,7 @@ const PokeCard = (props) => {
         invertedChart={props.invertedChart}
         statSelected={props.statSelected}
         selectedStat={props.selectedStat}
+        pickStatRandomly={props.pickStatRandomly}
       />
     );
   }

@@ -19,6 +19,7 @@ const PokemonAdvancedStats = (props) => {
       data={chartInput}
       statSelected={props.statSelected}
       selectedStat={props.selectedStat}
+      pickStatRandomly={props.pickStatRandomly}
     />
   );
 

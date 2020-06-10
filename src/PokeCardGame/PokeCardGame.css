@@ -106,6 +106,14 @@
   font-size: 1.25rem;
 }
 
+.PokeCardGame-loser-message {
+  font-family: cursive;
+  font-variant: all-petite-caps;
+  color: aquamarine;
+  font-weight: bold;
+  font-size: 1.25rem;
+}
+
 .PokeCardGame-player-turn-indicator-container
   .PokeCardGame-player-turn-indicator-text {
   color: gold;
