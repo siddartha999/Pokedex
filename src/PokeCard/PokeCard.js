@@ -1,10 +1,10 @@
-import React, { useState } from "react";
+import React, { useContext } from "react";
 import "./PokeCard.css";
 import retrievePokemonImage from "../services/retrievePokemonImage";
 import PokemonAdvancedStats from "../PokemonAdvancedStats/PokemonAdvancedStats";
+import { pokemonTypeImageListContext } from "../services/contextInitializers";
 
 const PokeCard = (props) => {
-  const [isDialogOpen, setIsDialogOpen] = useState(false);
   const name = props.data.name;
   const exp = props.data.experience;
   const types = props.data.types;
@@ -16,11 +16,12 @@ const PokeCard = (props) => {
   const displayExperienceStat = props.displayExperience;
   const displayPokemonBgImage = props.displayPokemonBgImage;
   const pokeCardStyle = {};
+  const pokemonTypeImageList = useContext(pokemonTypeImageListContext);
 
   const pokemonTypeImages = () => {
     const images = [];
     for (let type of types) {
-      images.push(props.pokemonTypeImages.get(type.type.name));
+      images.push(pokemonTypeImageList.get(type.type.name));
     }
     return images;
   };
@@ -31,32 +32,19 @@ const PokeCard = (props) => {
     pokeCardStyle["backgroundSize"] = "cover";
   }
 
-  const handleToggleDialog = () => {
-    setIsDialogOpen(!isDialogOpen);
-  };
-
   const imgJSX = (
     <div className="PokeCard-pokemon-image-container">
       <img
         className="PokeCard-pokemon-image"
         src={imgSrc}
         alt={`${name}`}
-        onClick={handleToggleDialog}
       ></img>
     </div>
   );
 
   let advancedStatsJSX;
   if (displayAdvancedStats) {
-    advancedStatsJSX = (
-      <PokemonAdvancedStats
-        stats={props.data.stats}
-        invertedChart={props.invertedChart}
-        statSelected={props.statSelected}
-        selectedStat={props.selectedStat}
-        pickStatRandomly={props.pickStatRandomly}
-      />
-    );
+    advancedStatsJSX = <PokemonAdvancedStats stats={props.data.stats} />;
   }
 
   const experienceStatJSX = (

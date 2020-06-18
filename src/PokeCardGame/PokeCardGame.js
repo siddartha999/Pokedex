@@ -1,82 +1,43 @@
-import React, { useState } from "react";
-import Button from "@material-ui/core/Button";
-import ButtonGroup from "@material-ui/core/ButtonGroup";
-import { makeStyles } from "@material-ui/core/styles";
+import React, { useState, useRef } from "react";
 import generateRandomLists from "../services/generateRandomLists";
-import PokeCard from "../PokeCard/PokeCard";
 import "./PokeCardGame.css";
-import pokeCardBack from "../images/pokeCardBack-2.jpg";
 import { Prompt } from "react-router-dom";
+import PokeCardPreGame from "./PokeCardPreGame";
+import PokeCardInGame from "./PokeCardInGame";
+import {
+  statSelectedFromPokeCardContext,
+  selectedStatValueContext,
+} from "../services/contextInitializers";
 
 const ALLOWED_CARDS_PER_GAME = [20, 50, 100];
 const CARD_GAME_PLAYER_NAMES = { HUMAN: "Human", SYSTEM: "System" };
 
-const useStyles = makeStyles((theme) => ({
-  root: {
-    display: "flex",
-    justifyContent: "center",
-    alignItems: "center",
-    "& > *": {
-      margin: theme.spacing(1),
-    },
-  },
-  startGameButton: {
-    height: "5rem",
-    width: "100%",
-    minWidth: "5rem",
-    fontSize: "1.25rem",
-    fontFamily: "cursive",
-    fontStyle: "italic",
-    "&:hover": {
-      backgroundColor: "lightslategray",
-    },
-  },
-  active: {
-    backgroundColor: "firebrick",
-  },
-  pickPlayerButton: {
-    fontFamily: "cursive",
-    fontStyle: "italic",
-    backgroundColor: "blanchedalmond",
-    color: "darkblue",
-    "&:hover": {
-      color: "wheat",
-    },
-  },
-}));
-
 const PokeCardGame = (props) => {
-  const classes = useStyles();
   const pokemonList = props.pokemonList;
   const [hasGameStarted, setHasGameStarted] = useState(false);
   const [cardsPerGame, setCardsPerGame] = useState(ALLOWED_CARDS_PER_GAME[0]);
-  const [humanCards, setHumanCards] = useState([]);
-  const [systemCards, setSystemCards] = useState([]);
-  const [humanScore, setHumanScore] = useState(0);
-  const [systemScore, setSystemScore] = useState(0);
+  const humanCards = useRef([]);
+  const systemCards = useRef([]);
+  const humanScore = useRef(0);
+  const systemScore = useRef(0);
   const [whoseTurn, setWhoseTurn] = useState(undefined);
   const [selectedStat, setSelectedStat] = useState(false);
-  const [cardsRemaining, setCardsRemaining] = useState(
-    ALLOWED_CARDS_PER_GAME[0]
-  );
-  const [currentRoundWinner, setCurrentRoundWinner] = useState(undefined);
+  const cardsRemaining = useRef(ALLOWED_CARDS_PER_GAME[0]);
+  const currentRoundWinner = useRef(undefined);
 
-  const startGameHandler = () => {
+  const startPokeCardGame = () => {
     setHasGameStarted(true);
     const cardsList = generateRandomLists(pokemonList, 2, cardsPerGame);
-    setHumanCards(cardsList[0]);
-    setSystemCards(cardsList[1]);
-    setCardsRemaining(cardsList[0].length);
+    humanCards.current = cardsList[0];
+    systemCards.current = cardsList[1];
+    cardsRemaining.current = cardsList[0].length;
   };
 
-  const handleCardsButtonClicked = (event) => {
-    const val = event.target.parentElement.name;
-    if (val) {
-      setCardsPerGame(event.target.parentElement.name);
-    }
+  const totalCardsChosen = (val) => {
+    setCardsPerGame(val);
   };
 
-  const pickPlayerHandler = () => {
+  const handlePickPlayerToStart = () => {
     const playerRandomlyPicked = Math.floor(Math.random() * 2);
     if (playerRandomlyPicked === 0) {
       setWhoseTurn(CARD_GAME_PLAYER_NAMES.HUMAN);
@@ -101,258 +62,97 @@ const PokeCardGame = (props) => {
   const determineCurrentRoundWinner = (playerOneScore, playerTwoScore) => {
     if (whoseTurn === CARD_GAME_PLAYER_NAMES.HUMAN) {
       if (playerOneScore <= playerTwoScore) {
-        setSystemScore(() => systemScore + 1);
-        setCurrentRoundWinner(() => CARD_GAME_PLAYER_NAMES.SYSTEM);
+        systemScore.current = systemScore.current + 1;
+        currentRoundWinner.current = CARD_GAME_PLAYER_NAMES.SYSTEM;
       } else {
-        setHumanScore(() => humanScore + 1);
-        setCurrentRoundWinner(() => CARD_GAME_PLAYER_NAMES.HUMAN);
+        humanScore.current = humanScore.current + 1;
+        currentRoundWinner.current = CARD_GAME_PLAYER_NAMES.HUMAN;
       }
     } else {
       if (playerOneScore >= playerTwoScore) {
-        setHumanScore(() => humanScore + 1);
-        setCurrentRoundWinner(() => CARD_GAME_PLAYER_NAMES.HUMAN);
+        humanScore.current = humanScore.current + 1;
+        currentRoundWinner.current = CARD_GAME_PLAYER_NAMES.HUMAN;
       } else {
-        setCurrentRoundWinner(() => CARD_GAME_PLAYER_NAMES.SYSTEM);
+        systemScore.current = systemScore.current + 1;
+        currentRoundWinner.current = CARD_GAME_PLAYER_NAMES.SYSTEM;
       }
     }
   };
 
-  const statSelectedHandler = (statName) => {
+  const handlePokeCardStatSelected = (statName) => {
     setSelectedStat(statName);
-    setCardsRemaining(() => cardsRemaining - 1);
+    cardsRemaining.current = cardsRemaining.current - 1;
 
-    const humanScore = retrieveStat(humanCards[0].stats, statName);
-    const systemScore = retrieveStat(systemCards[0].stats, statName);
+    const humanScore = retrieveStat(humanCards.current[0].stats, statName);
+    const systemScore = retrieveStat(systemCards.current[0].stats, statName);
 
     determineCurrentRoundWinner(humanScore, systemScore);
   };
 
-  const continueGameHandler = () => {
+  const handleGameContinuity = () => {
     setSelectedStat(undefined);
 
-    setWhoseTurn(currentRoundWinner);
+    setWhoseTurn(currentRoundWinner.current);
 
-    const newHumanCards = [...humanCards];
-    const newSystemCards = [...systemCards];
+    const newHumanCards = [...humanCards.current];
+    const newSystemCards = [...systemCards.current];
     newHumanCards.shift();
     newSystemCards.shift();
 
-    setHumanCards(newHumanCards);
-    setSystemCards(newSystemCards);
+    humanCards.current = newHumanCards;
+    systemCards.current = newSystemCards;
   };
 
-  const endGameHandler = () => {
+  const handleEndGame = () => {
     setHasGameStarted(false);
-    setHumanScore(0);
-    setSystemScore(0);
+    humanScore.current = 0;
+    systemScore.current = 0;
     setSelectedStat(undefined);
     setWhoseTurn(undefined);
-    setCurrentRoundWinner(undefined);
+    currentRoundWinner.current = null;
   };
 
-  const generatePreGameJSX = () => {
-    const preGameJSX = (
-      <div className="PokeCardGame-start-game-screen">
-        <div className="PokeCardGame-start-game-button-container">
-          <div className="PokeCardGame-start-game-button-group-container">
-            <ButtonGroup
-              variant="contained"
-              color="primary"
-              aria-label="contained primary button group"
-              className={classes.root}
-            >
-              {ALLOWED_CARDS_PER_GAME.map((val) => (
-                <Button name={val} key={val} onClick={handleCardsButtonClicked}>
-                  {val} Cards Each
-                </Button>
-              ))}
-            </ButtonGroup>
-          </div>
-          <Button
-            variant="contained"
-            color="primary"
-            size="large"
-            className={classes.startGameButton}
-            onClick={startGameHandler}
-          >
-            Start Game : {cardsPerGame} Cards
-          </Button>
-        </div>
-      </div>
-    );
-
-    return preGameJSX;
-  };
-
-  const generateGameJSX = () => {
-    const backOfCardJSX = (
-      <img
-        className="PokeCardGame-player-poke-card-backside-image"
-        src={pokeCardBack}
-        alt="poke-card-back-side"
+  const generatePokeCardPreGameJSX = () => {
+    return (
+      <PokeCardPreGame
+        totalCardsChosen={totalCardsChosen}
+        startPokeCardGame={startPokeCardGame}
+        cardsPerGame={cardsPerGame}
+        ALLOWED_CARDS_PER_GAME={ALLOWED_CARDS_PER_GAME}
       />
     );
-
-    const cardsJSX = (
-      <div className="PokeCardGame-players-card-lists-container">
-        <div className="PokeCardGame-player-poke-card-container">
-          {whoseTurn === CARD_GAME_PLAYER_NAMES.HUMAN || selectedStat ? (
-            <PokeCard
-              data={humanCards[0]}
-              displayAdvancedStats
-              statSelected={statSelectedHandler}
-              selectedStat={selectedStat}
-              pokemonTypeImages={props.pokemonTypeImages}
-            />
-          ) : (
-            backOfCardJSX
-          )}
-        </div>
-
-        <div className="PokeCardGame-player-poke-card-container">
-          {whoseTurn === CARD_GAME_PLAYER_NAMES.SYSTEM || selectedStat ? (
-            <PokeCard
-              data={systemCards[0]}
-              displayAdvancedStats
-              statSelected={statSelectedHandler}
-              selectedStat={selectedStat}
-              pickStatRandomly={!selectedStat}
-              pokemonTypeImages={props.pokemonTypeImages}
-            />
-          ) : (
-            backOfCardJSX
-          )}
-        </div>
-      </div>
-    );
-
-    const playerTurnTextJSX = (
-      <div className="PokeCardGame-player-turn-indicator-container">
-        <p className="PokeCardGame-player-turn-indicator-text PokeCardGame-stats-text">
-          {whoseTurn} Turn
-        </p>
-      </div>
-    );
-
-    const pickPlayerRandomlyButtonJSX = (
-      <div className="PokeCardGame-pick-player-to-start-button-container">
-        <Button
-          variant="contained"
-          color="primary"
-          size="large"
-          className={classes.pickPlayerButton}
-          onClick={pickPlayerHandler}
-        >
-          Assign Initial Turn Randomly
-        </Button>
-      </div>
-    );
-
-    const continueGameButtonJSX = (
-      <div
-        className={`PokeCardGame-continue-game-button-container ${
-          !selectedStat && " hide"
-        }`}
-      >
-        <Button
-          variant="contained"
-          color="primary"
-          size="large"
-          className={classes.pickPlayerButton}
-          onClick={continueGameHandler}
-        >
-          Continue For The Next Round
-        </Button>
-      </div>
-    );
-
-    const endGameButtonJSX = (
-      <div className="PokeCardGame-end-game-button-container">
-        <Button
-          variant="contained"
-          color="primary"
-          size="large"
-          className={classes.pickPlayerButton}
-          onClick={endGameHandler}
-        >
-          End Game
-        </Button>
-      </div>
-    );
-
-    const roundWinnerJSX = (
-      <div
-        className={`PokeCardGame-round-winner-indicator-container ${
-          !selectedStat && " hide"
-        }`}
-      >
-        <p className="PokeCardGame-round-winner-indicator PokeCardGame-stats-text">
-          {currentRoundWinner} won this round!
-        </p>
-      </div>
-    );
-
-    const statsArenaJSX = (
-      <div className="PokeCardGame-stats-arena">
-        <div className="PokeCardGame-stats-arena-header-container">
-          {!whoseTurn && pickPlayerRandomlyButtonJSX}
-          {!cardsRemaining && generateWinnerJSX()}
-          {!cardsRemaining ? endGameButtonJSX : continueGameButtonJSX}
-        </div>
-        <div className="PokeCardGame-players-score-container">
-          <div className="PokeCardGame-individual-player-score-container">
-            <p className="PokeCardGame-stats-text">Human : {humanScore}</p>
-          </div>
-          <div className="PokeCardGame-individual-player-score-container">
-            <p className="PokeCardGame-stats-text">System : {systemScore}</p>
-          </div>
-          {whoseTurn && cardsRemaining ? playerTurnTextJSX : null}
-          <div className="PokeCardGame-cards-remaining-indicator-container">
-            <p className="PokeCardGame-stats-text">
-              Cards Remaining: {cardsRemaining}
-            </p>
-          </div>
-          {roundWinnerJSX}
-        </div>
-      </div>
-    );
-
-    const gameJSX = (
-      <div className="PokeCardGame">
-        {cardsJSX}
-        {statsArenaJSX}
-      </div>
-    );
-
-    return gameJSX;
   };
 
-  const generateWinnerJSX = () => {
-    let result;
-    if (humanScore > systemScore) {
-      result = (
-        <p className="PokeCardGame-winner-message">
-          Congratulations {CARD_GAME_PLAYER_NAMES.HUMAN} for the victory!!
-        </p>
-      );
-    } else if (systemScore > humanScore) {
-      result = (
-        <p className="PokeCardGame-loser-message">
-          Sorry {CARD_GAME_PLAYER_NAMES.HUMAN}, you lose.
-        </p>
-      );
-    } else {
-      result = <p className="PokeCardGame-draw-message">It's a DRAW!!! </p>;
-    }
-
+  const generatePokeCardInGameJSX = () => {
     return (
-      <div className="PokeCardGame-winner-message-container">{result}</div>
+      <statSelectedFromPokeCardContext.Provider
+        value={handlePokeCardStatSelected}
+      >
+        <selectedStatValueContext.Provider value={selectedStat}>
+          <PokeCardInGame
+            playerNames={CARD_GAME_PLAYER_NAMES}
+            cardsRemaining={cardsRemaining.current}
+            humanScore={humanScore.current}
+            systemScore={systemScore.current}
+            humanCards={humanCards.current}
+            systemCards={systemCards.current}
+            selectedStat={selectedStat}
+            handlePickPlayerToStart={handlePickPlayerToStart}
+            whoseTurn={whoseTurn}
+            currentRoundWinner={currentRoundWinner.current}
+            handleEndGame={handleEndGame}
+            handleGameContinuity={handleGameContinuity}
+          />
+        </selectedStatValueContext.Provider>
+      </statSelectedFromPokeCardContext.Provider>
     );
   };
 
   return (
     <>
-      {!hasGameStarted ? generatePreGameJSX() : generateGameJSX()}
+      {hasGameStarted
+        ? generatePokeCardInGameJSX()
+        : generatePokeCardPreGameJSX()}
       <Prompt
         when={hasGameStarted}
         message={(location) => {

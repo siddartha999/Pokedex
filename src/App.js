@@ -7,6 +7,7 @@ import NavBar from "./Navbar/Navbar";
 import Compare from "./Compare/Compare";
 import retrievePokemonList from "./services/retrievePokemonList";
 import CircularProgress from "@material-ui/core/CircularProgress";
+import { pokemonTypeImageListContext } from "./services/contextInitializers";
 import bugTypeImg from "./images/Bug.png";
 import darkTypeImg from "./images/Dark.png";
 import dragonTypeImg from "./images/Dragon.png";
@@ -26,7 +27,7 @@ import rockTypeImg from "./images/Rock.png";
 import steelTypeImg from "./images/Steel.png";
 import waterTypeImg from "./images/Water.png";
 
-const POKEMON_TYPES_IMAGES = new Map(
+const POKEMON_TYPES_IMAGE_LIST = new Map(
   Object.entries({
     bug: bugTypeImg,
     dark: darkTypeImg,
@@ -76,20 +77,22 @@ function App() {
           exact
           path="/"
           render={() => (
-            <Pokedex
-              pokemonList={pokemonList}
-              pokemonTypeImages={POKEMON_TYPES_IMAGES}
-            />
+            <pokemonTypeImageListContext.Provider
+              value={POKEMON_TYPES_IMAGE_LIST}
+            >
+              <Pokedex pokemonList={pokemonList} />
+            </pokemonTypeImageListContext.Provider>
           )}
         />
         <Route
           exact
           path="/pokecardgame"
           render={() => (
-            <PokeCardGame
-              pokemonList={pokemonList}
-              pokemonTypeImages={POKEMON_TYPES_IMAGES}
-            />
+            <pokemonTypeImageListContext.Provider
+              value={POKEMON_TYPES_IMAGE_LIST}
+            >
+              <PokeCardGame pokemonList={pokemonList} />
+            </pokemonTypeImageListContext.Provider>
           )}
         />
         <Route exact path="/compare" render={() => <Compare />} />

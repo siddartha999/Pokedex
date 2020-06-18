@@ -14,14 +14,7 @@ const PokemonAdvancedStats = (props) => {
     });
   }
 
-  const chartJSX = (
-    <BarChart
-      data={chartInput}
-      statSelected={props.statSelected}
-      selectedStat={props.selectedStat}
-      pickStatRandomly={props.pickStatRandomly}
-    />
-  );
+  const chartJSX = <BarChart data={chartInput} />;
 
   return <>{chartJSX}</>;
 };

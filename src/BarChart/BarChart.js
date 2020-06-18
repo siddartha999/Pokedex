@@ -1,6 +1,11 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useContext } from "react";
 import "./BarChart.css";
 import retrieveMaxNumber from "../services/retrieveMaxNumber";
+import {
+  statSelectedFromPokeCardContext,
+  selectedStatValueContext,
+  pickStatRandomlyValueContext,
+} from "../services/contextInitializers";
 
 const styleObj = {
   background: "#8360c3  linear-gradient(to right, #2ebf91, #8360c3)",
@@ -14,8 +19,9 @@ const styleObj = {
 
 const BarChart = (props) => {
   let maxNum = props.maxNum || Number.MIN_SAFE_INTEGER;
-  const selectedStat = props.selectedStat;
-  const pickStatRandomly = props.pickStatRandomly;
+  const pickStatRandomly = useContext(pickStatRandomlyValueContext);
+  const statSelectedHandler = useContext(statSelectedFromPokeCardContext);
+  let selectedStat = useContext(selectedStatValueContext);
 
   if (!props.maxNum) {
     maxNum = retrieveMaxNumber(props.data);
@@ -26,15 +32,15 @@ const BarChart = (props) => {
       const randomlyPickedStatIndex = Math.floor(
         Math.random() * props.data.length
       );
-      props.statSelected &&
-        props.statSelected(props.data[randomlyPickedStatIndex].name);
+      const currentSelectedStat = props.data[randomlyPickedStatIndex].name;
+      statSelectedHandler(currentSelectedStat);
     }
-  }, [pickStatRandomly, props]);
+  });
 
   const handleBarClick = (event) => {
     if (selectedStat) return;
     const name = event.target.getAttribute("name");
-    props.statSelected && props.statSelected(name);
+    statSelectedHandler && statSelectedHandler(name);
   };
 
   const barChartJSX = props.data.map((dataPoint) => {
